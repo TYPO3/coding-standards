@@ -1,0 +1,24 @@
+{
+	"name": "typo3/coding-standards",
+	"type": "coding-standards",
+	"description": "A set of coding guidelines for any TYPO3-related project or extension",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Benni Mack",
+			"email": "benni@typo3.org"
+		}
+	],
+	"require": {
+        "friendsofphp/php-cs-fixer": "^2.16.0",
+        "php": "^7.2"
+    },
+	"config": {
+		"sort-packages": true
+	},
+	"autoload": {
+		"psr-4": {
+			"TYPO3\\CodingStandards\\": "src/"
+		}
+	}
+}
