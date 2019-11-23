@@ -26,10 +26,6 @@ Making sure your PHP files apply to the same rules.
 If you work on a team, and you use different IDE settings, `.editorconfig` helps you to have the same settings
 across all editors. It does not matter if it is VS-Code, vim or PhpStorm.
 
-3. eslint config
-
-TypeScript rules are also available.
-
 ### Setting up the TYPO3 rulesets as boilerplate
 
 Our coding standards file can set this up for you. Run
@@ -95,5 +91,4 @@ This package is available under the MIT license, since it relies heavily on the 
 In addition, I would like to thank the TYPO3 Core Team that kickstarted this set of rules in 2015, and to the
 creators and maintainers of PHP-CS-Fixer package.
 
-Benni Mack
-TYPO3 Project Lead
+Benni Mack, TYPO3 Project Lead

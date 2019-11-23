@@ -10,8 +10,8 @@
 		}
 	],
 	"require": {
-        "friendsofphp/php-cs-fixer": "^2.16.0",
-        "php": "^7.2"
+        "php": "^7.2",
+        "friendsofphp/php-cs-fixer": "^2.16.0"
     },
 	"config": {
 		"sort-packages": true
