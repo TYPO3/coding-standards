@@ -44,7 +44,7 @@ or if you want to update the rules, add `-f` option to the end.
 
 Have a look at the newly created files in your root folder:
 
-- .php_cs
+- .php-cs-fixer.php
 - .editorconfig
 
 For projects, the folder `src/extensions` is configured by default, but you can
