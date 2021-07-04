@@ -30,14 +30,16 @@ across all editors. It does not matter if it is VS-Code, vim or PhpStorm.
 
 Our coding standards file can set this up for you. Run
 
-    php vendor/typo3/coding-standards/setup.php project
-    php vendor/typo3/coding-standards/setup.php extension 
+```bash
+php vendor/typo3/coding-standards/setup.php project
+php vendor/typo3/coding-standards/setup.php extension
+```
 
 or if you want to update the rules, add `-f` option to the end.
 
 Have a look at the newly created files in your root folder:
 
-- .php_cs 
+- .php-cs-fixer.php
 - .editorconfig
 
 For projects, the folder `src/extensions` is configured by default, but you can accommodate where your extensions
@@ -52,7 +54,9 @@ You can decide to commit them to your Git repository, which is the recommended w
 
 Once you've followed the step above, running PHP CS Fixer works like this:
 
- composer exec php-cs-fixer
+```bash
+composer exec php-cs-fixer
+```
 
 Leave a note on how you set it up on GitHub Actions or GitLab CI/CD so this document can be even more helpful
 for everybody.
