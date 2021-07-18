@@ -20,5 +20,6 @@
 		"psr-4": {
 			"TYPO3\\CodingStandards\\": "src/"
 		}
-	}
+	},
+	"bin": "typo3-coding-standards"
 }
