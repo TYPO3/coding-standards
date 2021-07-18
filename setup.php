@@ -4,7 +4,16 @@ declare(strict_types = 1);
 
 $setup = function($scriptPath, string $type = null, $forceOption = null) {
     $rootPath = getcwd();
-    require $rootPath . '/vendor/autoload.php';
+
+    $dir = \dirname(__DIR__);
+    while (!file_exists($dir . '/autoload.php')) {
+        if ($dir === $rootPath) {
+            exit(1);
+        }
+        $dir = \dirname($dir);
+    }
+    require $dir . '/autoload.php';
+
     $obj = new \TYPO3\CodingStandards\Setup($rootPath);
     switch ($type) {
         case 'extension':
