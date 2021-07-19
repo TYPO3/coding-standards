@@ -32,11 +32,11 @@ class Setup
     {
         $errors = $this->copyEditorConfig($force);
         // copy php-cs-fixer configuration
-        if (file_exists($this->rootPath . '/.php_cs') && !$force) {
-            echo "A .php_cs file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+        if ((file_exists($this->rootPath . '/.php_cs') || file_exists($this->rootPath . '/.php-cs-fixer.php')) && !$force) {
+            echo "A .php-cs-fixer.php or .php_cs file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
             $errors = true;
         } else {
-            copy($this->templatesPath . '/project_php_cs.dist', $this->rootPath . '/.php_cs');
+            copy($this->templatesPath . '/project_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.php');
         }
         return $errors ? 1 : 0;
     }
@@ -45,11 +45,11 @@ class Setup
     {
         $errors = $this->copyEditorConfig($force);
         // copy php-cs-fixer configuration
-        if (file_exists($this->rootPath . '/.php_cs') && !$force) {
-            echo "A .php_cs file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+        if ((file_exists($this->rootPath . '/.php_cs') || file_exists($this->rootPath . '/.php-cs-fixer.php')) && !$force) {
+            echo "A .php-cs-fixer.php or .php_cs file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
             $errors = true;
         } else {
-            copy($this->templatesPath . '/extension_php_cs.dist', $this->rootPath . '/.php_cs');
+            copy($this->templatesPath . '/extension_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.php');
         }
         return $errors ? 1 : 0;
     }
