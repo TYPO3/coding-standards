@@ -5,7 +5,7 @@ declare(strict_types = 1);
 $setup = function($scriptPath, string $type = null, $forceOption = null) {
     $rootPath = getcwd();
 
-    $dir = \dirname(__DIR__);
+    $dir = __DIR__ . '/vendor';
     while (!file_exists($dir . '/autoload.php')) {
         if ($dir === $rootPath) {
             exit(1);
