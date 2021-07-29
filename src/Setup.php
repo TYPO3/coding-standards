@@ -1,14 +1,20 @@
 <?php
-declare(strict_types = 1);
-namespace TYPO3\CodingStandards;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 project  - inspiring people to share!
- * (c) 2019 Benni Mack
+ * This file is part of the TYPO3 project.
+ *
+ * (c) 2019-2021 Benni Mack
+ *               Simon Gilli
  *
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
  */
+
+namespace TYPO3\CodingStandards;
 
 class Setup
 {
@@ -31,43 +37,56 @@ class Setup
     public function forProject(bool $force): int
     {
         $errors = $this->copyEditorConfig($force);
-        // copy php-cs-fixer configuration
-        if (!$force
-            && (file_exists($this->rootPath . '/.php_cs') || file_exists($this->rootPath . '/.php-cs-fixer.php'))
-        ) {
-            echo "A .php-cs-fixer.php or .php_cs file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
-            $errors = true;
-        } else {
-            copy($this->templatesPath . '/project_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.php');
-        }
+        $errors = $this->copyPhpCsFixerConfig($force, 'project') || $errors;
+
         return $errors ? 1 : 0;
     }
 
     public function forExtension(bool $force): int
     {
         $errors = $this->copyEditorConfig($force);
-        // copy php-cs-fixer configuration
-        if (!$force
+        $errors = $this->copyPhpCsFixerConfig($force, 'extension') || $errors;
+
+        return $errors ? 1 : 0;
+    }
+
+    private function copyPhpCsFixerConfig(bool $force, string $typePrefix): bool
+    {
+        $errors = false;
+
+        if (!$force && file_exists($this->rootPath . '/.php_cs') && !file_exists($this->rootPath . '/.php-cs-fixer.php')) {
+            rename($this->rootPath . '/.php_cs', $this->rootPath . '/.php-cs-fixer.php');
+            echo "Found deprecated .php_cs file and renamed it to .php-cs-fixer.php.\n";
+        }
+
+        if (
+            !$force
             && (file_exists($this->rootPath . '/.php_cs') || file_exists($this->rootPath . '/.php-cs-fixer.php'))
         ) {
-            echo "A .php-cs-fixer.php or .php_cs file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+            echo "A .php-cs-fixer.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
             $errors = true;
         } else {
-            copy($this->templatesPath . '/extension_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.php');
+            copy($this->templatesPath . '/' . $typePrefix . '_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.php');
+
+            if (file_exists($this->rootPath . '/.php_cs')) {
+                unlink($this->rootPath . '/.php_cs');
+            }
         }
-        return $errors ? 1 : 0;
+
+        return $errors;
     }
 
     private function copyEditorConfig(bool $force): bool
     {
         $errors = false;
-        // copy editorconfig
+
         if (!$force && file_exists($this->rootPath . '/.editorconfig')) {
             echo "A .editorconfig file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
             $errors = true;
         } else {
             copy($this->templatesPath . '/editorconfig.dist', $this->rootPath . '/.editorconfig');
         }
+
         return $errors;
     }
 }

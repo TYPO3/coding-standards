@@ -1,5 +1,8 @@
 /.idea/
 /.build/
+/var/*
 /vendor/
 /composer.lock
 /.php-cs-fixer.cache
+/.phplint-cache
+/.phpunit.result.cache

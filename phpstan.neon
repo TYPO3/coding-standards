@@ -1,0 +1,8 @@
+parameters:
+	level: max
+	treatPhpDocTypesAsCertain: false
+
+	paths:
+		- src
+		- tests
+		- typo3-coding-standards

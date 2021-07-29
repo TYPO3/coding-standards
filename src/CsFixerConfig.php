@@ -1,20 +1,30 @@
 <?php
-declare(strict_types = 1);
-namespace TYPO3\CodingStandards;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 project  - inspiring people to share!
- * (c) 2019 Benni Mack
+ * This file is part of the TYPO3 project.
+ *
+ * (c) 2019-2021 Benni Mack
+ *               Simon Gilli
  *
  * For the full copyright and license information, please view
  * the LICENSE file that was distributed with this source code.
+ *
+ * The TYPO3 project - inspiring people to share!
  */
+
+namespace TYPO3\CodingStandards;
 
 use PhpCsFixer\Config;
 use PhpCsFixer\ConfigInterface;
+use PhpCsFixer\Finder;
 
 class CsFixerConfig extends Config
 {
+    /**
+     * @var string
+     */
     private static $defaultHeader = <<<EOF
 {header}
 
@@ -28,6 +38,9 @@ LICENSE.txt file that was distributed with this source code.
 The TYPO3 project - inspiring people to share!
 EOF;
 
+    /**
+     * @var array<string, mixed>
+     */
     private static $typo3Rules = [
         '@DoctrineAnnotation' => true,
         '@PSR2' => true,
@@ -80,7 +93,7 @@ EOF;
         'whitespace_after_comma_in_array' => true,
     ];
 
-    public function __construct($name = 'TYPO3')
+    public function __construct(string $name = 'TYPO3')
     {
         parent::__construct($name);
     }
@@ -89,12 +102,18 @@ EOF;
     {
         $config = (new self())
             ->setRiskyAllowed(true)
-            ->setRules(static::$typo3Rules);
+            ->setRules(self::$typo3Rules);
 
-        $config->getFinder()->exclude(['vendor', 'typo3temp', 'var', '.build']);
+        /** @var Finder */
+        $finder = $config->getFinder();
+        $finder->exclude(['vendor', 'typo3temp', 'var', '.build']);
+
         return $config;
     }
 
+    /**
+     * @param array<string, mixed> $rules
+     */
     public function addRules(array $rules): ConfigInterface
     {
         $rules = array_replace_recursive($this->getRules(), $rules);
@@ -106,14 +125,14 @@ EOF;
         bool $replaceAll = false
     ): ConfigInterface {
         if (!$replaceAll) {
-            $header = str_replace('{header}', $header, static::$defaultHeader);
+            $header = str_replace('{header}', $header, self::$defaultHeader);
         }
         $rules = $this->getRules();
         $rules['header_comment'] = [
             'header' => $header,
-            'commentType' => 'comment',
+            'comment_type' => 'comment',
             'location' => 'after_declare_strict',
-            'separate' => 'both'
+            'separate' => 'both',
         ];
         return $this->setRules($rules);
     }
