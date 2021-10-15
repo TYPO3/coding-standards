@@ -2,7 +2,7 @@
 <?php
 declare(strict_types = 1);
 
-$setup = function($scriptPath, string $type = null, $forceOption = null) {
+$setup = static function($scriptPath, string $type = null, $forceOption = null) {
     $rootPath = getcwd();
 
     $dir = __DIR__ . '/vendor';
