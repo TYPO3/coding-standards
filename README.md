@@ -36,16 +36,21 @@ it is VS-Code, vim or PhpStorm.
 Our coding standards file can set this up for you. Run
 
 ```bash
-php vendor/typo3/coding-standards/setup.php project
-php vendor/typo3/coding-standards/setup.php extension
+composer exec typo3-coding-standards project
+```
+
+or
+
+```bash
+composer exec typo3-coding-standards extension
 ```
 
 or if you want to update the rules, add `-f` option to the end.
 
 Have a look at the newly created files in your root folder:
 
-- .php-cs-fixer.php
-- .editorconfig
+* .php-cs-fixer.php
+* .editorconfig
 
 For projects, the folder `src/extensions` is configured by default, but you can
 accommodate where your extensions or PHP code resides in. For extensions,
@@ -84,12 +89,12 @@ these guidelines.
 
 However, there are some more rules that we think are good:
 
-- Remove leading slashes in use clauses.
-- PHP single-line arrays should not have trailing comma.
-- Single-line whitespace before closing semicolon are prohibited.
-- Remove unused use statements in the PHP source code
-- Ensure Concatenation to have at least one whitespace around
-- Remove trailing whitespace at the end of blank lines.
+* Remove leading slashes in use clauses.
+* PHP single-line arrays should not have trailing comma.
+* Single-line whitespace before closing semicolon are prohibited.
+* Remove unused use statements in the PHP source code
+* Ensure Concatenation to have at least one whitespace around
+* Remove trailing whitespace at the end of blank lines.
 
 ## Maintaining and Development of this package
 
