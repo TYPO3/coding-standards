@@ -22,11 +22,17 @@ indent_style = tab
 
 # ReST-Files
 [*.rst]
-indent_size = 3
+indent_size = 4
+max_line_length = 80
 
 # YAML-Files
 [*.{yaml,yml}]
 indent_size = 2
+
+# NEON-Files
+[*.neon]
+indent_size = 2
+indent_style = tab
 
 # package.json
 [package.json]
