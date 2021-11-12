@@ -17,11 +17,10 @@ jobs:
         fetch-depth: 0
 
     - name: Sync files with the latest TYPO3 Core version
-      id: sync-rules
+      id: core-synchronization
       uses: actions/github-script@v5
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
-        debug: ${{ secrets.ACTIONS_DEBUG == 'true' }}
         script: |
-          const script = require('./build/dist/sync.js')
-          await script({github, context, core, exec})
+          const script = require('./.github/actions/dist/core-synchronization.js')
+          await script({github, context, core, exec}, 'task/core-update', 'TYPO3', 'typo3')
