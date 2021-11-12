@@ -1,0 +1,27 @@
+name: Core Synchronization
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 4 * * *'
+
+jobs:
+  create_pull_request:
+    name: Create pull request on changes
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Sync files with the latest TYPO3 Core version
+      id: sync-rules
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        debug: ${{ secrets.ACTIONS_DEBUG == 'true' }}
+        script: |
+          const script = require('./build/dist/sync.js')
+          await script({github, context, core, exec})
