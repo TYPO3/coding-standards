@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         failOnRisky="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         bootstrap="tests/bootstrap.php"
+>
+    <testsuites>
+        <testsuite name="Coding Standards Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <file>./setup.php</file>
+            <directory>./src/</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="var/log/report"/>
+        <log type="coverage-clover" target="var/log/coverage.xml"/>
+        <log type="coverage-php" target="var/log/coverage.serialized"/>
+        <!--log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/-->
+        <log type="junit" target="var/log/logfile.xml"/>
+        <log type="testdox-html" target="var/log/testdox.html"/>
+        <log type="testdox-text" target="var/log/testdox.txt"/>
+    </logging>
+</phpunit>

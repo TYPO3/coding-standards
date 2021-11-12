@@ -7,19 +7,76 @@
 		{
 			"name": "Benni Mack",
 			"email": "benni@typo3.org"
+		},
+		{
+			"name": "Simon Gilli",
+			"email": "simon.gilli@typo3.org"
 		}
 	],
 	"require": {
 		"php": "^7.2 || ^8.0",
 		"friendsofphp/php-cs-fixer": "^3.0"
 	},
+	"require-dev": {
+		"composer/package-versions-deprecated": "1.11.99.4",
+		"ergebnis/composer-normalize": "^2.15",
+		"maglnet/composer-require-checker": "^2.1 || ^3.3",
+		"overtrue/phplint": "^3.0",
+		"phpstan/extension-installer": "^1.1",
+		"phpstan/phpstan-deprecation-rules": "^1.0",
+		"phpstan/phpstan-phpunit": "^1.0",
+		"phpstan/phpstan-strict-rules": "^1.0",
+		"phpstan/phpstan-symfony": "^1.0",
+		"phpunit/phpunit": "^8.5 || ^9.5"
+	},
 	"config": {
 		"sort-packages": true
 	},
 	"autoload": {
 		"psr-4": {
-			"TYPO3\\CodingStandards\\": "src/"
+			"TYPO3\\CodingStandards\\": "src"
 		}
 	},
-	"bin": "typo3-coding-standards"
+	"autoload-dev": {
+		"psr-4": {
+			"TYPO3\\CodingStandards\\Tests\\": "tests"
+		}
+	},
+	"bin": "typo3-coding-standards",
+	"scripts": {
+		"ci": [
+			"@ci:composer",
+			"@ci:php"
+		],
+		"ci:composer": [
+			"@ci:composer:validate",
+			"@ci:composer:normalize",
+			"@ci:composer:require-checker"
+		],
+		"ci:composer:normalize": "@composer normalize --dry-run",
+		"ci:composer:require-checker": "composer-require-checker",
+		"ci:composer:validate": "@composer validate",
+		"ci:php": [
+			"@ci:php:lint",
+			"@ci:php:cs",
+			"@ci:php:stan",
+			"@ci:php:unit"
+		],
+		"ci:php:cs": "php-cs-fixer fix -v --dry-run --using-cache no --diff",
+		"ci:php:lint": "phplint --no-progress",
+		"ci:php:stan": "phpstan analyse --no-progress",
+		"ci:php:unit": "phpunit",
+		"fix": [
+			"@fix:composer",
+			"@fix:php"
+		],
+		"fix:composer": [
+			"@fix:composer:normalize"
+		],
+		"fix:composer:normalize": "@composer normalize",
+		"fix:php": [
+			"@fix:php:cs"
+		],
+		"fix:php:cs": "php-cs-fixer fix"
+	}
 }

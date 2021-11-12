@@ -1,0 +1,109 @@
+name: 'Continuous Integration (CI)'
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    name: 'PHP ${{ matrix.php-version }} - Composer ${{ matrix.composer-version }} (${{ matrix.dependency-version }})'
+
+    runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+        php-version:
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+        composer-version:
+          - '1'
+          - '2'
+        dependency-version:
+          - 'lowest'
+          - 'stable'
+        experimental: [false]
+        include:
+          - os: ubuntu-latest
+            php-version: '8.1'
+            composer-version: '2'
+            dependency-version: 'lowest'
+            experimental: true
+          - os: ubuntu-latest
+            php-version: '8.1'
+            composer-version: '2'
+            dependency-version: 'stable'
+            experimental: true
+        exclude:
+          - os: ubuntu-latest
+            php-version: '8.0'
+            composer-version: '1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: xdebug
+          extensions: mbstring
+          ini-values: memory_limit=-1, error_reporting=E_ALL, display_errors=On
+          php-version: ${{ matrix.php-version }}
+          tools: composer:${{ matrix.composer-version }}
+
+      - name: Composer Cache Vars
+        id: composer-cache-vars
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "::set-output name=timestamp::$(date +"%s")"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache-vars.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependency-version }}-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependency-version }}-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependency-version }}-
+            ${{ runner.os }}-composer-${{ matrix.composer-version }}-
+            ${{ runner.os }}-composer-
+
+      - name: Validate composer.json
+        run: composer ci:composer:validate
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-progress --prefer-${{ matrix.dependency-version }} --no-interaction
+
+      - name: Normalize composer.json
+        run: composer ci:composer:normalize
+
+      - name: Check Composer dependencies
+        run: composer ci:composer:require-checker
+
+      - name: Lint PHP files
+        if: always()
+        run: composer ci:php:lint
+
+      - name: Check code styling
+        if: always()
+        run: composer ci:php:cs
+
+      - name: PHP Stan
+        continue-on-error: ${{ matrix.php-version != '7.2' }}
+        if: always()
+        run: composer ci:php:stan
+
+      - name: Unit Tests
+        if: always()
+        run: composer ci:php:unit
+
+      - name: Archive Logs
+        uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: logs
+          path: var/log
