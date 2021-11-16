@@ -36,7 +36,7 @@ jobs:
             php-version: '8.1'
             composer-version: '2'
             dependency-version: 'stable'
-            experimental: true
+            experimental: false
         exclude:
           - os: ubuntu-latest
             php-version: '8.0'
@@ -89,6 +89,8 @@ jobs:
         run: composer ci:php:lint
 
       - name: Check code styling
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
         if: always()
         run: composer ci:php:cs
 
@@ -98,11 +100,12 @@ jobs:
         run: composer ci:php:stan
 
       - name: Unit Tests
+        continue-on-error: ${{ matrix.experimental }}
         if: always()
         run: composer ci:php:unit
 
       - name: Archive Logs
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2
         if: always()
         with:
           name: logs
