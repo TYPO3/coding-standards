@@ -1,0 +1,26 @@
+name: Core Synchronization
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 4 * * *'
+
+jobs:
+  create_pull_request:
+    name: Create pull request on changes
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Sync files with the latest TYPO3 Core version
+      id: core-synchronization
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          const script = require('./.github/actions/dist/core-synchronization.js')
+          await script({github, context, core, exec}, 'task/core-update', 'TYPO3', 'typo3')

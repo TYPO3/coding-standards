@@ -1,6 +1,7 @@
 /.ddev export-ignore
 /.github export-ignore
 /.vscode export-ignore
+/build/ export-ignore
 /tests/ export-ignore
 /.editorconfig export-ignore
 /.gitattributes export-ignore
@@ -11,6 +12,8 @@
 /phpunit.xml export-ignore
 
 # Enforce checkout with linux lf consistent over all platforms
+*.js text eol=lf
+*.ts text eol=lf
 *.dist text eol=lf
 *.json text eol=lf
 *.php text eol=lf
