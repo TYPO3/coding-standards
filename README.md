@@ -105,6 +105,25 @@ This package is not meant to be updated regularly, since talking about coding
 guidelines takes a lot of time, and is usual a matter of taste. Nonetheless,
 you can always open up an issue if you feel like we're missing out on something.
 
+### Development
+
+A GitHub action automatically synchronizes the files with the TYPO3 Core. Please
+do not open pull requests for these changes, but push your changes to the
+TYPO3 Core.
+
+The source code comes with a DDEV Local configuration that makes using Composer
+and switching PHP versions very easy. For more information about DDEV, see the
+[documentation](https://ddev.readthedocs.io).
+
+In the `composer.json` many scripts are predefined to run the CI locally before
+you push erroneous changes. Additionally some fix commands are integrated.
+
+#### Manually update the files from the core
+
+The synchronization job is scheduled once per night. It can also be started
+manually on the `Actions` tab on GitHub by selecting `Core Synchronization` and
+running the workflow on the main branch.
+
 ## License & Thanks
 
 This package is available under the MIT license, since it relies heavily on the
