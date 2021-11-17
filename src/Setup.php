@@ -54,19 +54,24 @@ class Setup
     {
         $errors = false;
 
-        if (!$force && file_exists($this->rootPath . '/.php_cs') && !file_exists($this->rootPath . '/.php-cs-fixer.php')) {
-            rename($this->rootPath . '/.php_cs', $this->rootPath . '/.php-cs-fixer.php');
-            echo "Found deprecated .php_cs file and renamed it to .php-cs-fixer.php.\n";
+        if (!$force && file_exists($this->rootPath . '/.php_cs') && !file_exists($this->rootPath . '/.php-cs-fixer.dist.php')) {
+            rename($this->rootPath . '/.php_cs', $this->rootPath . '/.php-cs-fixer.dist.php');
+            echo "Found deprecated .php_cs file and renamed it to .php-cs-fixer.dist.php.\n";
+        }
+
+        if (!$force && file_exists($this->rootPath . '/.php-cs-fixer.php') && !file_exists($this->rootPath . '/.php-cs-fixer.dist.php')) {
+            rename($this->rootPath . '/.php-cs-fixer.php', $this->rootPath . '/.php-cs-fixer.dist.php');
+            echo "Found .php-cs-fixer.php file and renamed it to .php-cs-fixer.dist.php.\n";
         }
 
         if (
             !$force
-            && (file_exists($this->rootPath . '/.php_cs') || file_exists($this->rootPath . '/.php-cs-fixer.php'))
+            && (file_exists($this->rootPath . '/.php_cs') || file_exists($this->rootPath . '/.php-cs-fixer.dist.php'))
         ) {
-            echo "A .php-cs-fixer.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+            echo "A .php-cs-fixer.dist.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
             $errors = true;
         } else {
-            copy($this->templatesPath . '/' . $typePrefix . '_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.php');
+            copy($this->templatesPath . '/' . $typePrefix . '_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.dist.php');
 
             if (file_exists($this->rootPath . '/.php_cs')) {
                 unlink($this->rootPath . '/.php_cs');

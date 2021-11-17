@@ -109,8 +109,9 @@ class SetupTest extends TestCase
     public function scenariosProvider(): \Generator
     {
         $editorconfigWarning = "A .editorconfig file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
-        $phpcsInformation = "Found deprecated .php_cs file and renamed it to .php-cs-fixer.php.\n";
-        $phpcsWarning = "A .php-cs-fixer.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+        $phpcsFoundDeprecatedInformation = "Found deprecated .php_cs file and renamed it to .php-cs-fixer.dist.php.\n";
+        $phpcsFoundInformation = "Found .php-cs-fixer.php file and renamed it to .php-cs-fixer.dist.php.\n";
+        $phpcsWarning = "A .php-cs-fixer.dist.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
 
         yield 'all files are created' => [
             'existingFiles' => [],
@@ -119,13 +120,15 @@ class SetupTest extends TestCase
             'expectedOutput' => '',
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
-                '.php-cs-fixer.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
                 '.php_cs' => false,
             ],
         ];
         yield 'files are not overwritten' => [
             'existingFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php_cs' => 'FIX:php-cs-fixer.dist.php',
             ],
@@ -134,6 +137,7 @@ class SetupTest extends TestCase
             'expectedOutput' => $editorconfigWarning . $phpcsWarning,
             'expectedFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php_cs' => 'FIX:php-cs-fixer.dist.php',
             ],
@@ -147,7 +151,22 @@ class SetupTest extends TestCase
             'expectedOutput' => $editorconfigWarning,
             'expectedFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
-                '.php-cs-fixer.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
+                '.php_cs' => false,
+            ],
+        ];
+        yield 'php-cs-fixer.dist.php is not overwritten' => [
+            'existingFiles' => [
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
+            ],
+            'force' => false,
+            'expectedResult' => 1,
+            'expectedOutput' => $phpcsWarning,
+            'expectedFiles' => [
+                '.editorconfig' => 'TPL:editorconfig.dist',
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
                 '.php_cs' => false,
             ],
         ];
@@ -157,10 +176,11 @@ class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => $phpcsWarning,
+            'expectedOutput' => $phpcsFoundInformation . $phpcsWarning,
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
-                '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
                 '.php_cs' => false,
             ],
         ];
@@ -170,16 +190,18 @@ class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => $phpcsInformation . $phpcsWarning,
+            'expectedOutput' => $phpcsFoundDeprecatedInformation . $phpcsWarning,
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
-                '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
                 '.php_cs' => false,
             ],
         ];
         yield 'all files are overwritten' => [
             'existingFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php_cs' => 'FIX:php-cs-fixer.dist.php',
             ],
@@ -188,7 +210,8 @@ class SetupTest extends TestCase
             'expectedOutput' => '',
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
-                '.php-cs-fixer.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php_cs' => false,
             ],
         ];
@@ -201,11 +224,26 @@ class SetupTest extends TestCase
             'expectedOutput' => '',
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
-                '.php-cs-fixer.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
                 '.php_cs' => false,
             ],
         ];
         yield 'php-cs-fixer.dist.php is overwritten' => [
+            'existingFiles' => [
+                '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
+            ],
+            'force' => true,
+            'expectedResult' => 0,
+            'expectedOutput' => '',
+            'expectedFiles' => [
+                '.editorconfig' => 'TPL:editorconfig.dist',
+                '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
+                '.php_cs' => false,
+            ],
+        ];
+        yield 'php-cs-fixer.php is preserved' => [
             'existingFiles' => [
                 '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
             ],
@@ -214,7 +252,8 @@ class SetupTest extends TestCase
             'expectedOutput' => '',
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
-                '.php-cs-fixer.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => 'FIX:php-cs-fixer.dist.php',
                 '.php_cs' => false,
             ],
         ];
@@ -227,7 +266,8 @@ class SetupTest extends TestCase
             'expectedOutput' => '',
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
-                '.php-cs-fixer.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
+                '.php-cs-fixer.php' => false,
                 '.php_cs' => false,
             ],
         ];
