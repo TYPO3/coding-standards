@@ -105,11 +105,11 @@ This package is not meant to be updated regularly, since talking about coding
 guidelines takes a lot of time, and is usual a matter of taste. Nonetheless,
 you can always open up an issue if you feel like we're missing out on something.
 
-### Development
-
 A GitHub action automatically synchronizes the files with the TYPO3 Core. Please
 do not open pull requests for these changes, but push your changes to the
 TYPO3 Core.
+
+### Development
 
 The source code comes with a DDEV Local configuration that makes using Composer
 and switching PHP versions very easy. For more information about DDEV, see the
