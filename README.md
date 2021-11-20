@@ -55,7 +55,7 @@ Have a look at the newly created files in your root folder:
 * .php-cs-fixer.php
 * .editorconfig
 
-For projects, the folder `src/extensions` is configured by default, but you can
+For projects, the folder `src` is configured by default, but you can
 accommodate where your extensions or PHP code resides in. For extensions,
 PHP-CS-Fixer scans the whole base directory.
 
