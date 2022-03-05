@@ -133,4 +133,8 @@ In addition, I would like to thank the TYPO3 Core Team that kickstarted this
 set of rules in 2015, and to the creators and maintainers of PHP-CS-Fixer
 package.
 
+## See also
+
+YouTube: [TYPO3-Tutorial - The TYPO3 Coding Standards Package](https://www.youtube.com/watch?v=P9fafF2IVpY)
+
 Benni Mack, TYPO3 Project Lead
