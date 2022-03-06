@@ -124,6 +124,10 @@ The synchronization job is scheduled once per night. It can also be started
 manually on the `Actions` tab on GitHub by selecting `Core Synchronization` and
 running the workflow on the main branch.
 
+## Video Tutorial
+
+[![TYPO3-Tutorial - The TYPO3 Coding Standards Package](Documentation/Files/youtube-video-tutorial.png)](https://www.youtube.com/watch?v=P9fafF2IVpY)
+
 ## License & Thanks
 
 This package is available under the MIT license, since it relies heavily on the
@@ -132,9 +136,5 @@ PHP-CS-Fixer code.
 In addition, I would like to thank the TYPO3 Core Team that kickstarted this
 set of rules in 2015, and to the creators and maintainers of PHP-CS-Fixer
 package.
-
-## See also
-
-YouTube: [TYPO3-Tutorial - The TYPO3 Coding Standards Package](https://www.youtube.com/watch?v=P9fafF2IVpY)
 
 Benni Mack, TYPO3 Project Lead
