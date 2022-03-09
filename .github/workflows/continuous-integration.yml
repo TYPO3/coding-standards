@@ -1,11 +1,250 @@
 name: 'Continuous Integration (CI)'
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '33 3 * * *'
+
+env:
+  COMPOSER_FLAGS: --ansi --no-interaction --no-progress
+  COMPOSER_INSTALL_FLAGS: --prefer-dist
+  COMPOSER_UPDATE_FLAGS: ''
 
 jobs:
-  tests:
-    name: 'PHP ${{ matrix.php-version }} - Composer ${{ matrix.composer-version }} (${{ matrix.dependency-version }})'
+  validation:
+    name: Composer validation
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: intl, zip
+          ini-values: memory_limit=-1, error_reporting=E_ALL, display_errors=On
+          php-version: latest
+          tools: composer
+
+      - name: Composer Cache Vars
+        id: composer-cache-vars
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "::set-output name=timestamp::$(date +"%s")"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache-vars.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ steps.composer-cache-vars.outputs.timestamp }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
+
+      - name: Validate composer.json
+        run: composer ci:composer:validate
+
+      - name: Normalize composer.json
+        run: composer ci:composer:normalize
+
+      - name: Check dependencies
+        run: composer ci:composer:require-checker
+
+  php_lint:
+    name: PHP Lint
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '7.2'
+          - 'latest'
+        experimental:
+          - false
+        include:
+          - php-version: 'nightly'
+            experimental: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: intl, zip
+          ini-values: memory_limit=-1, error_reporting=E_ALL, display_errors=On
+          php-version: ${{ matrix.php-version }}
+
+      - name: Composer Cache Vars
+        id: composer-cache-vars
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "::set-output name=timestamp::$(date +"%s")"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache-vars.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-
+
+      - name: Set platform.php for nightly
+        if: ${{ matrix.php-version == 'nightly' }}
+        run: |
+          composer config platform.php 8.1.99
+
+      - name: Install dependencies
+        run: composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
+
+      - name: Lint PHP files
+        run: composer ci:php:lint
+
+  php_coding_standards:
+    name: PHP Coding Standards
+    needs:
+      - php_lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: intl, zip
+          ini-values: memory_limit=-1, error_reporting=E_ALL, display_errors=On
+          php-version: latest
+
+      - name: Composer Cache Vars
+        id: composer-cache-vars
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "::set-output name=timestamp::$(date +"%s")"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache-vars.outputs.dir }}
+          key: ${{ runner.os }}-composer-latest-${{ steps.composer-cache-vars.outputs.timestamp }}
+          restore-keys: |
+            ${{ runner.os }}-composer-latest-
+
+      - name: Install dependencies
+        run: composer install ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
+
+      - name: Validation of coding standards for PHP files
+        run: composer ci:php:cs
+
+  php_stan:
+    name: PHP Stan
+    needs:
+      - validation
+      - php_coding_standards
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+          - 'latest'
+        dependencies:
+          - 'lowest'
+          - 'stable'
+          - 'highest'
+        experimental:
+          - false
+        include:
+          - php-version: 'nightly'
+            dependencies: 'lowest'
+            experimental: true
+          - php-version: 'nightly'
+            dependencies: 'stable'
+            experimental: true
+          - php-version: 'nightly'
+            dependencies: 'highest'
+            experimental: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: intl, zip
+          ini-values: memory_limit=-1
+          php-version: ${{ matrix.php-version }}
+
+      - name: Composer Cache Vars
+        id: composer-cache-vars
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "::set-output name=timestamp::$(date +"%s")"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache-vars.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.dependencies }}-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.dependencies }}-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-${{ matrix.dependencies }}-
+            ${{ runner.os }}-composer-
+
+      - name: Handle lowest dependencies update
+        if: contains(matrix.dependencies, 'lowest')
+        run: echo "COMPOSER_UPDATE_FLAGS=$COMPOSER_UPDATE_FLAGS --prefer-lowest" >> $GITHUB_ENV
+
+      - name: Allow alpha releases for latest-deps builds to catch problems earlier
+        if: contains(matrix.dependencies, 'highest')
+        run: composer config minimum-stability alpha
+
+      - name: Set platform.php for nightly
+        if: ${{ matrix.php-version == 'nightly' }}
+        run: |
+          composer config platform.php 8.1.99
+
+      - name: Install dependencies without deprecation rules
+        run: |
+          composer remove --dev phpstan/phpstan-deprecation-rules --no-update ${{ env.COMPOSER_FLAGS }}
+          composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
+
+      - name: Run PHPStan
+        run: composer ci:php:stan
+
+      - name: Install dependencies with deprecation rules
+        run: |
+          composer require --dev phpstan/phpstan-deprecation-rules --no-update ${{ env.COMPOSER_FLAGS }}
+          composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
+
+      - name: Run PHPStan with deprecation rules
+        continue-on-error: true
+        run: composer ci:php:stan
+
+  tests:
+    name: Tests
+    needs:
+      - php_stan
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
 
@@ -19,27 +258,41 @@ jobs:
           - '7.3'
           - '7.4'
           - '8.0'
+          - '8.1'
+          - 'latest'
         composer-version:
           - '1'
           - '2'
-        dependency-version:
+        dependencies:
           - 'lowest'
           - 'stable'
+          - 'highest'
         experimental: [false]
         include:
           - os: ubuntu-latest
-            php-version: '8.1'
+            php-version: 'nightly'
             composer-version: '2'
             dependency-version: 'lowest'
             experimental: true
           - os: ubuntu-latest
-            php-version: '8.1'
+            php-version: 'nightly'
             composer-version: '2'
             dependency-version: 'stable'
-            experimental: false
+            experimental: true
+          - os: ubuntu-latest
+            php-version: 'nightly'
+            composer-version: '2'
+            dependency-version: 'highest'
+            experimental: true
         exclude:
           - os: ubuntu-latest
             php-version: '8.0'
+            composer-version: '1'
+          - os: ubuntu-latest
+            php-version: '8.1'
+            composer-version: '1'
+          - os: ubuntu-latest
+            php-version: 'latest'
             composer-version: '1'
 
     steps:
@@ -65,39 +318,28 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache-vars.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependency-version }}-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+          key: ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependencies }}-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
           restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependency-version }}-${{ matrix.php-version }}-
-            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependency-version }}-
+            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependencies }}-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependencies }}-
             ${{ runner.os }}-composer-${{ matrix.composer-version }}-
             ${{ runner.os }}-composer-
 
-      - name: Validate composer.json
-        run: composer ci:composer:validate
+      - name: Handle lowest dependencies update
+        if: contains(matrix.dependencies, 'lowest')
+        run: echo "COMPOSER_UPDATE_FLAGS=$COMPOSER_UPDATE_FLAGS --prefer-lowest" >> $GITHUB_ENV
+
+      - name: Allow alpha releases for latest-deps builds to catch problems earlier
+        if: contains(matrix.dependencies, 'highest')
+        run: composer config minimum-stability alpha
+
+      - name: Set platform.php for nightly
+        if: ${{ matrix.php-version == 'nightly' }}
+        run: |
+          composer config platform.php 8.1.99
 
       - name: Install dependencies
-        run: composer update --prefer-dist --no-progress --prefer-${{ matrix.dependency-version }} --no-interaction
-
-      - name: Normalize composer.json
-        run: composer ci:composer:normalize
-
-      - name: Check Composer dependencies
-        run: composer ci:composer:require-checker
-
-      - name: Lint PHP files
-        if: always()
-        run: composer ci:php:lint
-
-      - name: Check code styling
-        env:
-          PHP_CS_FIXER_IGNORE_ENV: 1
-        if: always()
-        run: composer ci:php:cs
-
-      - name: PHP Stan
-        continue-on-error: ${{ matrix.php-version != '7.2' }}
-        if: always()
-        run: composer ci:php:stan
+        run: composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
 
       - name: Unit Tests
         continue-on-error: ${{ matrix.experimental }}
