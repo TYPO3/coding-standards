@@ -1,7 +1,8 @@
 {
 	"name": "typo3/coding-standards",
-	"type": "coding-standards",
 	"description": "A set of coding guidelines for any TYPO3-related project or extension",
+	"license": "MIT",
+	"type": "coding-standards",
 	"keywords": [
 		"typo3",
 		"cms",
@@ -9,9 +10,7 @@
 		"editorconfig",
 		"php-cs-fixer"
 	],
-	"homepage": "https://typo3.org/",
 	"readme": "README.md",
-	"license": "MIT",
 	"authors": [
 		{
 			"name": "Benni Mack",
@@ -22,6 +21,13 @@
 			"email": "simon.gilli@typo3.org"
 		}
 	],
+	"homepage": "https://typo3.org/",
+	"support": {
+		"issues": "https://github.com/TYPO3/coding-standards/issues",
+		"chat": "https://typo3.org/help",
+		"source": "https://github.com/TYPO3/coding-standards",
+		"docs": "https://docs.typo3.org"
+	},
 	"require": {
 		"php": "^7.2 || ^8.0",
 		"friendsofphp/php-cs-fixer": "^3.0"
@@ -37,15 +43,8 @@
 		"phpstan/phpstan-phpunit": "^1.0",
 		"phpstan/phpstan-strict-rules": "^1.0",
 		"phpstan/phpstan-symfony": "^1.0",
-		"phpunit/phpunit": "^8.5 || ^9.5"
-	},
-	"config": {
-		"sort-packages": true
-	},
-	"extra": {
-		"branch-alias": {
-			"dev-master": "0.6.x-dev"
-		}
+		"phpunit/phpunit": "^8.5.24 || ^9.5.18",
+		"symfony/finder": ">=4.4.30"
 	},
 	"autoload": {
 		"psr-4": {
@@ -58,6 +57,18 @@
 		}
 	},
 	"bin": "typo3-coding-standards",
+	"config": {
+		"allow-plugins": {
+			"ergebnis/composer-normalize": true,
+			"phpstan/extension-installer": true
+		},
+		"sort-packages": true
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "0.6.x-dev"
+		}
+	},
 	"scripts": {
 		"ci": [
 			"@ci:composer",
@@ -93,11 +104,5 @@
 			"@fix:php:cs"
 		],
 		"fix:php:cs": "php-cs-fixer fix"
-	},
-	"support": {
-		"issues": "https://github.com/TYPO3/coding-standards/issues",
-		"chat": "https://typo3.org/help",
-		"source": "https://github.com/TYPO3/coding-standards",
-		"docs": "https://docs.typo3.org"
 	}
 }
