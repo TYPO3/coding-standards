@@ -99,6 +99,10 @@ However, there are some more rules that we think are good:
 * Ensure Concatenation to have at least one whitespace around
 * Remove trailing whitespace at the end of blank lines.
 
+## Video Tutorial
+
+[![TYPO3-Tutorial - The TYPO3 Coding Standards Package](/Documentation/Files/youtube-video-tutorial.png)](https://youtu.be/P9fafF2IVpY)
+
 ## Maintaining and Development of this package
 
 This package is not meant to be updated regularly, since talking about coding
