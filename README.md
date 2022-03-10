@@ -126,7 +126,7 @@ running the workflow on the main branch.
 
 ## Video Tutorial
 
-[![TYPO3-Tutorial - The TYPO3 Coding Standards Package](Documentation/Files/youtube-video-tutorial.png)](https://www.youtube.com/watch?v=P9fafF2IVpY)
+[![TYPO3-Tutorial - The TYPO3 Coding Standards Package](Documentation/Files/youtube-video-tutorial.png)](https://youtu.be/P9fafF2IVpY)
 
 ## License & Thanks
 
