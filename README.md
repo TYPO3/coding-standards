@@ -101,7 +101,7 @@ However, there are some more rules that we think are good:
 
 ## Video Tutorial
 
-[![TYPO3-Tutorial - The TYPO3 Coding Standards Package](Documentation/Files/youtube-video-tutorial.png)](https://youtu.be/P9fafF2IVpY)
+[![TYPO3-Tutorial - The TYPO3 Coding Standards Package](/Documentation/Files/youtube-video-tutorial.png)](https://youtu.be/P9fafF2IVpY)
 
 ## Maintaining and Development of this package
 
