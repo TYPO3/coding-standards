@@ -2,8 +2,8 @@ name: Core Synchronization
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '30 4 * * *'
+  #schedule:
+  #  - cron: '30 4 * * *'
 
 jobs:
   create_pull_request:
