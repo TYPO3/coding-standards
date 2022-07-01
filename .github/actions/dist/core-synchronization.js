@@ -247,7 +247,7 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
       title: "[TASK] Sync files with the latest TYPO3 Core version",
       head: branch,
       base: defaultBranch,
-      body: "- [ ] Update rules count in tests/Unit/CsFixerConfigTest.php",
+      body: "- [ ] Update rules count (https://github.com/TYPO3/coding-standards/edit/task/core-update/tests/Unit/CsFixerConfigTest.php)",
     })
 
     debug(response)
