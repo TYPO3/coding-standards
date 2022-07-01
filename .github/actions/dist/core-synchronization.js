@@ -22,11 +22,9 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
   async function debug(
     ...data
   ) {
-    /*
     if (!core.isDebug()) {
       return
     }
-    */
 
     console.log(...data)
   }
@@ -236,7 +234,7 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
   async function createPullRequest(
     branch
   ) {
-    const defaultBranch = getDefaultBranch()
+    const defaultBranch = await getDefaultBranch()
 
     debug(context.repo.owner)
     debug(context.repo.repo)
@@ -249,7 +247,7 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
       title: "[TASK] Sync files with the latest TYPO3 Core version",
       head: branch,
       base: defaultBranch,
-      body: `Test body.`,
+      body: "- [ ] Update rules count in tests/Unit/CsFixerConfigTest.php",
     })
 
     debug(response)
