@@ -22,9 +22,11 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
   async function debug(
     ...data
   ) {
+    /*
     if (!core.isDebug()) {
       return
     }
+    */
 
     console.log(...data)
   }
@@ -234,12 +236,19 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
   async function createPullRequest(
     branch
   ) {
+    const defaultBranch = getDefaultBranch()
+
+    debug(context.repo.owner)
+    debug(context.repo.repo)
+    debug(branch)
+    debug(defaultBranch)
+
     const response = await github.rest.pulls.create({
       owner: context.repo.owner,
       repo: context.repo.repo,
       title: "[TASK] Sync files with the latest TYPO3 Core version",
       head: branch,
-      base: getDefaultBranch(),
+      base: defaultBranch,
       body: `Test body.`,
     })
 

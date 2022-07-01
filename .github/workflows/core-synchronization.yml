@@ -18,7 +18,7 @@ jobs:
 
     - name: Sync files with the latest TYPO3 Core version
       id: core-synchronization
-      uses: actions/github-script@v5
+      uses: actions/github-script@v6
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
