@@ -26,7 +26,7 @@ class CsFixerConfigTest extends TestCase
         $config = CsFixerConfig::create();
         self::assertInstanceOf(CsFixerConfig::class, $config);
         self::assertTrue($config->getRiskyAllowed());
-        self::assertCount(50, $config->getRules());
+        self::assertCount(52, $config->getRules());
     }
 
     public function testAddRules(): void
