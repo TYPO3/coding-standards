@@ -17,8 +17,6 @@ declare(strict_types=1);
 namespace TYPO3\CodingStandards;
 
 use PhpCsFixer\Config;
-use PhpCsFixer\ConfigInterface;
-use PhpCsFixer\Finder;
 
 class CsFixerConfig extends Config
 {
@@ -101,13 +99,14 @@ EOF;
         parent::__construct($name);
     }
 
-    public static function create(): ConfigInterface
+    public static function create(): self
     {
-        $config = (new self())
+        $config = new self();
+        $config
             ->setRiskyAllowed(true)
-            ->setRules(self::$typo3Rules);
+            ->setRules(self::$typo3Rules)
+        ;
 
-        /** @var Finder */
         $finder = $config->getFinder();
         $finder->exclude(['vendor', 'typo3temp', 'var', '.build']);
 
@@ -117,16 +116,18 @@ EOF;
     /**
      * @param array<string, mixed> $rules
      */
-    public function addRules(array $rules): ConfigInterface
+    public function addRules(array $rules): self
     {
         $rules = array_replace_recursive($this->getRules(), $rules);
-        return $this->setRules($rules);
+        $this->setRules($rules);
+
+        return $this;
     }
 
     public function setHeader(
         string $header = 'This file is part of the TYPO3 CMS project.',
         bool $replaceAll = false
-    ): ConfigInterface {
+    ): self {
         if (!$replaceAll) {
             $header = str_replace('{header}', $header, self::$defaultHeader);
         }
@@ -137,6 +138,8 @@ EOF;
             'location' => 'after_declare_strict',
             'separate' => 'both',
         ];
-        return $this->setRules($rules);
+        $this->setRules($rules);
+
+        return $this;
     }
 }
