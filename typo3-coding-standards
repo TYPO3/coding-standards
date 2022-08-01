@@ -1,8 +1,6 @@
 #!/usr/bin/env php
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of the TYPO3 project.
  *
@@ -15,29 +13,25 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
-$setup = static function ($scriptPath, string $type = null, $forceOption = null) {
-    if (($rootPath = getcwd()) === false) {
-        throw new RuntimeException("Error while determining the current directory.", 1636451407);
-    }
+// load dependencies
+(static function () {
+    $possibleFiles = [__DIR__ . '/../../autoload.php', __DIR__ . '/../autoload.php', __DIR__ . '/vendor/autoload.php'];
+    $file = null;
+    foreach ($possibleFiles as $possibleFile) {
+        if (file_exists($possibleFile)) {
+            $file = $possibleFile;
 
-    $dir = __DIR__ . '/vendor';
-    while (!file_exists($dir . '/autoload.php')) {
-        if ($dir === $rootPath) {
-            exit(1);
+            break;
         }
-        $dir = \dirname($dir);
     }
-    require $dir . '/autoload.php';
 
-    $obj = new \TYPO3\CodingStandards\Setup($rootPath);
-    switch ($type) {
-        case 'extension':
-            return $obj->forExtension($forceOption === '-f');
-        case 'project':
-            return $obj->forProject($forceOption === '-f');
-        default:
-            echo "You need to specify at least one option. Use 'extension' or 'project'.\n";
-            exit(1);
+    if ($file === null) {
+        throw new RuntimeException(sprintf('Unable to locate autoload.php file from %s.', __FILE__));
     }
-};
-$setup(...$_SERVER['argv']);
+
+    require_once $file;
+})();
+
+use TYPO3\CodingStandards\Console\Application;
+
+return (new Application())->run();

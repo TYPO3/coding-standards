@@ -16,82 +16,178 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards;
 
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Style\StyleInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
 final class Setup
 {
     /**
      * @var string
      */
-    private $rootPath;
+    public const EXTENSION = 'extension';
+
+    /**
+     * @var string
+     */
+    public const PROJECT = 'project';
+
+    /**
+     * @var string[]
+     */
+    public const VALID_TYPES = [self::EXTENSION, self::PROJECT];
+
+    /**
+     * @var string
+     */
+    public const RULE_SET_EDITORCONFIG = 'editorconfig';
+
+    /**
+     * @var string
+     */
+    public const RULE_SET_PHP_CS_FIXER = 'php-cs-fixer';
+
+    /**
+     * @var string[]
+     */
+    public const VALID_RULE_SETS = [self::RULE_SET_EDITORCONFIG, self::RULE_SET_PHP_CS_FIXER];
+
+    /**
+     * @var string
+     */
+    private $targetDir;
 
     /**
      * @var string
      */
     private $templatesPath;
 
-    public function __construct(string $rootPath)
+    /**
+     * @var StyleInterface
+     */
+    private $style;
+
+    public function __construct(string $targetDir, StyleInterface $style = null)
     {
-        $this->rootPath = $rootPath;
-        $this->templatesPath = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'templates';
+        if ($targetDir === '') {
+            $targetDir = '.'; // @codeCoverageIgnore
+        }
+
+        if (!\is_dir($targetDir)) {
+            throw new \RuntimeException(sprintf("Target directory '%s' does not exist.", $targetDir));
+        }
+
+        // Normalize separators on Windows
+        if ('\\' === \DIRECTORY_SEPARATOR) {
+            $targetDir = \str_replace('\\', '/', $targetDir); // @codeCoverageIgnore
+        }
+
+        $this->targetDir = \rtrim($targetDir, '/');
+        $this->templatesPath = \dirname(__DIR__) . '/' . 'templates';
+
+        if ($style === null) {
+            $arrayInput = new ArrayInput([]);
+            $arrayInput->setInteractive(false);
+            $nullOutput = new NullOutput();
+            $style = new SymfonyStyle($arrayInput, $nullOutput);
+        }
+
+        $this->style = $style;
     }
 
+    /**
+     * @deprecated
+     */
     public function forProject(bool $force): int
     {
-        $errors = $this->copyEditorConfig($force);
-        $errors = $this->copyPhpCsFixerConfig($force, 'project') || $errors;
+        $result = $this->copyEditorConfig($force);
+        $result = $this->copyPhpCsFixerConfig($force, self::PROJECT) && $result;
 
-        return $errors ? 1 : 0;
+        return $result ? 0 : 1;
     }
 
+    /**
+     * @deprecated
+     */
     public function forExtension(bool $force): int
     {
-        $errors = $this->copyEditorConfig($force);
-        $errors = $this->copyPhpCsFixerConfig($force, 'extension') || $errors;
+        $result = $this->copyEditorConfig($force);
+        $result = $this->copyPhpCsFixerConfig($force, self::EXTENSION) && $result;
 
-        return $errors ? 1 : 0;
+        return $result ? 0 : 1;
     }
 
-    private function copyPhpCsFixerConfig(bool $force, string $typePrefix): bool
+    public function copyPhpCsFixerConfig(bool $force, string $type): bool
     {
-        $errors = false;
-
-        if (!$force && file_exists($this->rootPath . '/.php_cs') && !file_exists($this->rootPath . '/.php-cs-fixer.dist.php')) {
-            rename($this->rootPath . '/.php_cs', $this->rootPath . '/.php-cs-fixer.dist.php');
-            echo "Found deprecated .php_cs file and renamed it to .php-cs-fixer.dist.php.\n";
+        if (!in_array($type, self::VALID_TYPES, true)) {
+            throw new \RuntimeException(sprintf('Invalid type (%s) specified.', $type));
         }
 
-        if (!$force && file_exists($this->rootPath . '/.php-cs-fixer.php') && !file_exists($this->rootPath . '/.php-cs-fixer.dist.php')) {
-            rename($this->rootPath . '/.php-cs-fixer.php', $this->rootPath . '/.php-cs-fixer.dist.php');
-            echo "Found .php-cs-fixer.php file and renamed it to .php-cs-fixer.dist.php.\n";
-        }
+        $targetFile = '.php-cs-fixer.dist.php';
+        $targetFilepath = $this->targetDir . '/' . $targetFile;
 
-        if (
-            !$force
-            && (file_exists($this->rootPath . '/.php_cs') || file_exists($this->rootPath . '/.php-cs-fixer.dist.php'))
-        ) {
-            echo "A .php-cs-fixer.dist.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
-            $errors = true;
-        } else {
-            copy($this->templatesPath . '/' . $typePrefix . '_php-cs-fixer.dist.php', $this->rootPath . '/.php-cs-fixer.dist.php');
+        if (!$force) {
+            if (!file_exists($targetFilepath)) {
+                if (file_exists($this->targetDir . '/.php_cs')) {
+                    rename(
+                        $this->targetDir . '/.php_cs',
+                        $targetFilepath
+                    );
+                    $this->style->note('Deprecated .php_cs renamed to .php-cs-fixer.dist.php.');
+                }
 
-            if (file_exists($this->rootPath . '/.php_cs')) {
-                unlink($this->rootPath . '/.php_cs');
+                if (file_exists($this->targetDir . '/.php-cs-fixer.php')) {
+                    rename(
+                        $this->targetDir . '/.php-cs-fixer.php',
+                        $targetFilepath
+                    );
+                    $this->style->note('.php-cs-fixer.php renamed to .php-cs-fixer.dist.php.');
+                }
+            }
+
+            if (file_exists($targetFilepath)) {
+                $this->style->error(\sprintf(
+                    'A %s file already exists, nothing copied. Use the --force option to overwrite the file.',
+                    $targetFile
+                ));
+                return false;
             }
         }
 
-        return $errors;
-    }
-
-    private function copyEditorConfig(bool $force): bool
-    {
-        $errors = false;
-
-        if (!$force && file_exists($this->rootPath . '/.editorconfig')) {
-            echo "A .editorconfig file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
-            $errors = true;
-        } else {
-            copy($this->templatesPath . '/editorconfig.dist', $this->rootPath . '/.editorconfig');
+        if (file_exists($this->targetDir . '/.php_cs')) {
+            unlink($this->targetDir . '/.php_cs');
+            $this->style->note('Deprecated .php_cs removed.');
         }
 
-        return $errors;
+        copy(
+            $this->templatesPath . '/' . $type . '_php-cs-fixer.dist.php',
+            $targetFilepath
+        );
+        $this->style->success(sprintf('%s created for %s.', $targetFile, $type));
+
+        return true;
+    }
+
+    public function copyEditorConfig(bool $force): bool
+    {
+        $targetFile = '.editorconfig';
+        $targetFilepath = $this->targetDir . '/' . $targetFile;
+
+        if (!$force && file_exists($targetFilepath)) {
+            $this->style->error(\sprintf(
+                'A %s file already exists, nothing copied. Use the update command or the --force option to overwrite the file.',
+                $targetFile
+            ));
+            return false;
+        }
+
+        copy(
+            $this->templatesPath . '/editorconfig.dist',
+            $targetFilepath
+        );
+        $this->style->success(\sprintf('%s created.', $targetFile));
+
+        return true;
     }
 }

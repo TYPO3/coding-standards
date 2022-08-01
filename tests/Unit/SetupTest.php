@@ -16,7 +16,10 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit;
 
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use TYPO3\CodingStandards\Setup;
+use TYPO3\CodingStandards\Tests\Console\Style\SimpleStyle;
 
 /**
  * @covers \TYPO3\CodingStandards\Setup
@@ -26,37 +29,55 @@ final class SetupTest extends TestCase
     /**
      * @var string
      */
-    private const EDITORCONFIG_WARNING = "A .editorconfig file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+    private const EDITORCONFIG_CREATED = '[OK] .editorconfig created.';
 
     /**
      * @var string
      */
-    private const PHPCS_FOUND_DEPRECATED_INFORMATION = "Found deprecated .php_cs file and renamed it to .php-cs-fixer.dist.php.\n";
+    private const EDITORCONFIG_EXISTS = '[ERROR] A .editorconfig file already exists, nothing copied. Use the update command or the --force option to overwrite the file.';
 
     /**
      * @var string
      */
-    private const PHPCS_FOUND_INFORMATION = "Found .php-cs-fixer.php file and renamed it to .php-cs-fixer.dist.php.\n";
+    private const PHPCSFIXER_RENAMED_DEPRECATED = '! [NOTE] Deprecated .php_cs renamed to .php-cs-fixer.dist.php.';
 
     /**
      * @var string
      */
-    private const PHPCS_WARNING = "A .php-cs-fixer.dist.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+    private const PHPCSFIXER_RENAMED = '! [NOTE] .php-cs-fixer.php renamed to .php-cs-fixer.dist.php.';
 
     /**
-     * @param array<string, string> $replacePairs
+     * @var string
      */
-    protected function getFilename(string $filename, ?array $replacePairs = null): string
+    private const PHPCSFIXER_CREATED = '[OK] .php-cs-fixer.dist.php created for {$type}.';
+
+    /**
+     * @var string
+     */
+    private const PHPCSFIXER_EXISTS = '[ERROR] A .php-cs-fixer.dist.php file already exists, nothing copied. Use the --force option to overwrite the file.';
+
+    /**
+     * @var string
+     */
+    private const PHPCSFIXER_REMOVED = '! [NOTE] Deprecated .php_cs removed.';
+
+    /**
+     * @param array<int, string> $expectedOutput
+     */
+    private function calculateOutput(array $expectedOutput, string $type): string
     {
-        if ($replacePairs !== null) {
-            $filename = strtr($filename, $replacePairs);
+        $output = '';
+
+        foreach ($expectedOutput as $singleExpectedOutput) {
+            $output .= ' ' . strtr($singleExpectedOutput, ['{$type}' => $type]) . \PHP_EOL;
         }
 
-        return parent::getFilename($filename);
+        return $output;
     }
 
     /**
      * @param array<string, string> $existingFiles
+     * @param array<int, string> $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
     private function assertScenario(
@@ -64,28 +85,35 @@ final class SetupTest extends TestCase
         array $existingFiles,
         bool $force,
         int $expectedResult,
-        string $expectedOutput,
+        array $expectedOutput,
         array $expectedFiles
     ): void {
-        $testPath = $this->getTestPath();
-        $setup = new Setup($testPath);
+        $testPath = self::getTestPath();
+
+        $arrayInput = new ArrayInput([]);
+        // @phpstan-ignore-next-line
+        $arrayInput->setStream(fopen('php://memory', 'r+', false));
+
+        $bufferedOutput = new BufferedOutput();
+        $simpleStyle = new SimpleStyle($arrayInput, $bufferedOutput);
+
+        $setup = new Setup($testPath, $simpleStyle);
 
         // create pre existing files
-        foreach ($existingFiles as $target => $source) {
-            copy($this->getFilename($source), $testPath . '/' . $target);
-        }
+        self::createFiles($testPath, $existingFiles);
 
         // call the subject's method
         $methodName = 'for' . ucfirst($testType);
-        self::assertSame($expectedResult, $setup->$methodName($force)); // @phpstan-ignore-line
-        self::expectOutputString($expectedOutput);
+        // @phpstan-ignore-next-line
+        self::assertSame($expectedResult, $setup->$methodName($force));
+        self::assertSame($this->calculateOutput($expectedOutput, $testType), $bufferedOutput->fetch());
 
         // assert files
         foreach ($expectedFiles as $file => $template) {
             if ($template === false) {
                 self::assertFileNotExists($testPath . '/' . $file);
             } elseif (is_string($template)) {
-                self::assertFileEquals($this->getFilename($template, ['{$typePrefix}' => $testType]), $testPath . '/' . $file);
+                self::assertFileEquals(self::getFilename($template, ['{$typePrefix}' => $testType]), $testPath . '/' . $file);
             } else {
                 self::assertFileExists($testPath . '/' . $file);
             }
@@ -96,36 +124,44 @@ final class SetupTest extends TestCase
      * @dataProvider scenariosProvider
      *
      * @param array<string, string> $existingFiles
+     * @param array<int, string> $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
     public function testForProjectScenarios(
         array $existingFiles,
         bool $force,
         int $expectedResult,
-        string $expectedOutput,
+        array $expectedOutput,
         array $expectedFiles
     ): void {
-        $this->assertScenario('project', $existingFiles, $force, $expectedResult, $expectedOutput, $expectedFiles);
+        $this->assertScenario(Setup::PROJECT, $existingFiles, $force, $expectedResult, $expectedOutput, $expectedFiles);
     }
 
     /**
      * @dataProvider scenariosProvider
      *
      * @param array<string, string> $existingFiles
+     * @param array<int, string> $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
     public function testForExtensionScenarios(
         array $existingFiles,
         bool $force,
         int $expectedResult,
-        string $expectedOutput,
+        array $expectedOutput,
         array $expectedFiles
     ): void {
-        $this->assertScenario('extension', $existingFiles, $force, $expectedResult, $expectedOutput, $expectedFiles);
+        $this->assertScenario(Setup::EXTENSION, $existingFiles, $force, $expectedResult, $expectedOutput, $expectedFiles);
     }
 
     /**
-     * @return \Generator<string, array<string, array<string, bool|string>|int|string|bool>>
+     * @return \Generator<string, array{
+     *   existingFiles: array<string, string>,
+     *   force: bool,
+     *   expectedResult: int,
+     *   expectedOutput: array<int, string>,
+     *   expectedFiles: array<string, bool|string>
+     * }>
      */
     public function scenariosProvider(): \Generator
     {
@@ -133,7 +169,7 @@ final class SetupTest extends TestCase
             'existingFiles' => [],
             'force' => false,
             'expectedResult' => 0,
-            'expectedOutput' => '',
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_CREATED],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -150,7 +186,7 @@ final class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => self::EDITORCONFIG_WARNING . self::PHPCS_WARNING,
+            'expectedOutput' => [self::EDITORCONFIG_EXISTS, self::PHPCSFIXER_EXISTS],
             'expectedFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
@@ -164,7 +200,7 @@ final class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => self::EDITORCONFIG_WARNING,
+            'expectedOutput' => [self::EDITORCONFIG_EXISTS, self::PHPCSFIXER_CREATED],
             'expectedFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -178,7 +214,7 @@ final class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => self::PHPCS_WARNING,
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_EXISTS],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
@@ -192,7 +228,7 @@ final class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => self::PHPCS_FOUND_INFORMATION . self::PHPCS_WARNING,
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_RENAMED, self::PHPCSFIXER_EXISTS],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
@@ -206,7 +242,7 @@ final class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => self::PHPCS_FOUND_DEPRECATED_INFORMATION . self::PHPCS_WARNING,
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_RENAMED_DEPRECATED, self::PHPCSFIXER_EXISTS],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
@@ -223,7 +259,7 @@ final class SetupTest extends TestCase
             ],
             'force' => true,
             'expectedResult' => 0,
-            'expectedOutput' => '',
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_REMOVED, self::PHPCSFIXER_CREATED],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -237,7 +273,7 @@ final class SetupTest extends TestCase
             ],
             'force' => true,
             'expectedResult' => 0,
-            'expectedOutput' => '',
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_CREATED],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -251,7 +287,7 @@ final class SetupTest extends TestCase
             ],
             'force' => true,
             'expectedResult' => 0,
-            'expectedOutput' => '',
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_CREATED],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -265,7 +301,7 @@ final class SetupTest extends TestCase
             ],
             'force' => true,
             'expectedResult' => 0,
-            'expectedOutput' => '',
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_CREATED],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -279,7 +315,7 @@ final class SetupTest extends TestCase
             ],
             'force' => true,
             'expectedResult' => 0,
-            'expectedOutput' => '',
+            'expectedOutput' => [self::EDITORCONFIG_CREATED, self::PHPCSFIXER_REMOVED, self::PHPCSFIXER_CREATED],
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -287,5 +323,68 @@ final class SetupTest extends TestCase
                 '.php_cs' => false,
             ],
         ];
+    }
+
+    public function testCopyEditorConfig(): void
+    {
+        $setup = new Setup(self::getTestPath());
+
+        self::assertTrue($setup->copyEditorConfig(false));
+    }
+
+    /**
+     * @dataProvider typeDataProvider
+     */
+    public function testCopyPhpCsFixerConfig(string $type): void
+    {
+        $setup = new Setup(self::getTestPath());
+
+        self::assertTrue($setup->copyPhpCsFixerConfig(false, $type));
+    }
+
+    /**
+     * @return \Generator<string, array<string, string>>
+     */
+    public function typeDataProvider(): \Generator
+    {
+        foreach (Setup::VALID_TYPES as $type) {
+            yield $type => [
+                'type' => $type,
+            ];
+        }
+    }
+
+    public function testInvalidPathThrows(): void
+    {
+        $testPath = self::getTestPath() . '/invalid-path';
+
+        self::expectException(\RuntimeException::class);
+        self::expectExceptionMessageMatches('#.+(invalid-path).+#');
+
+        new Setup($testPath);
+    }
+
+    public function testIoIsCreated(): void
+    {
+        $arrayInput = new ArrayInput([]);
+        // @phpstan-ignore-next-line
+        $arrayInput->setStream(fopen('php://memory', 'r+', false));
+
+        $bufferedOutput = new BufferedOutput();
+        $simpleStyle = new SimpleStyle($arrayInput, $bufferedOutput);
+
+        $setup = new Setup(self::getTestPath(), $simpleStyle);
+
+        self::assertTrue($setup->copyEditorConfig(false));
+        self::assertStringContainsString('[OK]', $bufferedOutput->fetch());
+    }
+
+    public function testInvalidTypeThrows(): void
+    {
+        self::expectException(\RuntimeException::class);
+        self::expectExceptionMessageMatches('#.+(type).+#');
+
+        $setup = new Setup(self::getTestPath());
+        $setup->copyPhpCsFixerConfig(false, 'invalid-type');
     }
 }

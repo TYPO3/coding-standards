@@ -30,11 +30,15 @@
 	},
 	"require": {
 		"php": "^7.2 || ^8.0",
-		"friendsofphp/php-cs-fixer": "^3.0"
+		"ext-json": "*",
+		"friendsofphp/php-cs-fixer": "^3.0",
+		"symfony/console": "^4.4.30 || ^5.3.7 || ^6.0",
+		"symfony/filesystem": "^4.4 || ^5.0 || ^6.0"
 	},
 	"require-dev": {
 		"composer/package-versions-deprecated": "^1.11.99.4",
 		"ergebnis/composer-normalize": "*",
+		"keradus/cli-executor": "^1.5",
 		"maglnet/composer-require-checker": "*",
 		"nikic/php-parser": "^4.13.1",
 		"overtrue/phplint": "^3.0",
@@ -44,7 +48,8 @@
 		"phpstan/phpstan-strict-rules": "^1.0",
 		"phpstan/phpstan-symfony": "^1.0",
 		"phpunit/phpunit": "^8.5.24 || ^9.5.18",
-		"symfony/finder": ">=4.4.30"
+		"symfony/finder": ">=4.4",
+		"symfony/process": ">=4.4"
 	},
 	"autoload": {
 		"psr-4": {
@@ -56,7 +61,10 @@
 			"TYPO3\\CodingStandards\\Tests\\": "tests"
 		}
 	},
-	"bin": "typo3-coding-standards",
+	"bin": [
+		"t3-cs",
+		"typo3-coding-standards"
+	],
 	"config": {
 		"allow-plugins": {
 			"ergebnis/composer-normalize": true,

@@ -1,0 +1,16 @@
+<?php
+
+namespace Symfony\Component\Console\Command;
+
+class Command
+{
+    /**
+     * @var string
+     */
+    protected static $defaultName = '';
+
+    /**
+     * @var string
+     */
+    protected static $defaultDescription = '';
+}

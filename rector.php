@@ -21,6 +21,8 @@ use Rector\Privatization\Rector\Class_\FinalizeClassesWithoutChildrenRector;
 use Rector\Set\ValueObject\DowngradeLevelSetList;
 use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
+use Rector\Symfony\Set\SymfonyLevelSetList;
+use Rector\Symfony\Set\SymfonySetList;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([
@@ -29,6 +31,7 @@ return static function (RectorConfig $rectorConfig): void {
     ]);
 
     $rectorConfig->skip([
+        __DIR__ . '/tests/Console/Style/SimpleStyle.php',
         __DIR__ . '/tests/Unit/Fixtures',
 
         FinalizeClassesWithoutChildrenRector::class => [
@@ -49,6 +52,11 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::TYPE_DECLARATION,
         SetList::TYPE_DECLARATION_STRICT,
         SetList::EARLY_RETURN,
+
+        // Symfony rules
+        SymfonyLevelSetList::UP_TO_SYMFONY_44,
+        SymfonySetList::SYMFONY_STRICT,
+        SymfonySetList::SYMFONY_CODE_QUALITY,
 
         // PHPUnit rules
         PHPUnitLevelSetList::UP_TO_PHPUNIT_80,
