@@ -14,10 +14,10 @@ declare(strict_types=1);
  * The TYPO3 project - inspiring people to share!
  */
 
- /**
-  * @param string $file
-  * @return mixed
-  */
+/**
+ * @param string $file
+ * @return mixed
+ */
 function includeIfExists($file)
 {
     if (file_exists($file)) {
