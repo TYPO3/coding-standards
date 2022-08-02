@@ -51,11 +51,13 @@ jobs:
           echo "::set-output name=timestamp::$(date +"%s")"
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-vars.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ steps.composer-cache-vars.outputs.timestamp }}
+          key: ${{ runner.os }}-composer-2-latest-${{ steps.composer-cache-vars.outputs.timestamp }}
           restore-keys: |
+            ${{ runner.os }}-composer-2-latest-
+            ${{ runner.os }}-composer-2-
             ${{ runner.os }}-composer-
 
       - name: Install dependencies
@@ -106,12 +108,13 @@ jobs:
           echo "::set-output name=timestamp::$(date +"%s")"
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-vars.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+          key: ${{ runner.os }}-composer-2-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
           restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-2-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-2-
             ${{ runner.os }}-composer-
 
       - name: Set platform.php for nightly
@@ -150,12 +153,14 @@ jobs:
           echo "::set-output name=timestamp::$(date +"%s")"
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-vars.outputs.dir }}
-          key: ${{ runner.os }}-composer-latest-${{ steps.composer-cache-vars.outputs.timestamp }}
+          key: ${{ runner.os }}-composer-2-latest-${{ steps.composer-cache-vars.outputs.timestamp }}
           restore-keys: |
-            ${{ runner.os }}-composer-latest-
+            ${{ runner.os }}-composer-2-latest-
+            ${{ runner.os }}-composer-2-
+            ${{ runner.os }}-composer-
 
       - name: Install dependencies
         run: composer install ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
@@ -166,8 +171,7 @@ jobs:
   php_stan:
     name: PHP Stan
     needs:
-      - validation
-      - php_coding_standards
+      - php_lint
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
 
@@ -217,13 +221,14 @@ jobs:
           echo "::set-output name=timestamp::$(date +"%s")"
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-vars.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.dependencies }}-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+          key: ${{ runner.os }}-composer-2-${{ matrix.php-version }}-${{ matrix.dependencies }}-${{ steps.composer-cache-vars.outputs.timestamp }}
           restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.dependencies }}-${{ matrix.php-version }}-
-            ${{ runner.os }}-composer-${{ matrix.dependencies }}-
+            ${{ runner.os }}-composer-2-${{ matrix.php-version }}-${{ matrix.dependencies }}-
+            ${{ runner.os }}-composer-2-${{ matrix.php-version }}-
+            ${{ runner.os }}-composer-2-
             ${{ runner.os }}-composer-
 
       - name: Handle lowest dependencies update
@@ -259,7 +264,7 @@ jobs:
   tests:
     name: Tests
     needs:
-      - php_stan
+      - php_lint
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
 
@@ -318,8 +323,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           coverage: xdebug
-          extensions: mbstring
-          ini-values: memory_limit=-1, error_reporting=E_ALL, display_errors=On
+          extensions: mbstring, json
+          ini-values: memory_limit=-1, error_reporting=-1, log_errors_max_len=0, zend.assertions=1, assert.exception=1, xdebug.show_exception_trace=0
           php-version: ${{ matrix.php-version }}
           tools: composer:${{ matrix.composer-version }}
 
@@ -330,13 +335,13 @@ jobs:
           echo "::set-output name=timestamp::$(date +"%s")"
 
       - name: Cache Composer dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.composer-cache-vars.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependencies }}-${{ matrix.php-version }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+          key: ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.php-version }}-${{ matrix.dependencies }}-${{ steps.composer-cache-vars.outputs.timestamp }}
           restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependencies }}-${{ matrix.php-version }}-
-            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.dependencies }}-
+            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.php-version }}-${{ matrix.dependencies }}-
+            ${{ runner.os }}-composer-${{ matrix.composer-version }}-${{ matrix.php-version }}-
             ${{ runner.os }}-composer-${{ matrix.composer-version }}-
             ${{ runner.os }}-composer-
 
@@ -361,9 +366,33 @@ jobs:
         if: always()
         run: composer ci:php:unit
 
-      - name: Archive Logs
-        uses: actions/upload-artifact@v2
+      - name: Upload coverage results to Coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_PARALLEL: true
+          COVERALLS_FLAG_NAME: php-${{ matrix.composer-version }}-${{ matrix.php-version }}-${{ matrix.dependencies }}
+        run: |
+          composer exec phpcov -- merge --clover var/log/coverage/clover.xml var/log/coverage
+          composer global require ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }} php-coveralls/php-coveralls
+          composer global exec php-coveralls -- --coverage_clover=var/log/coverage/clover.xml -vvv --json_path=var/log/coverage/coveralls-upload.json
+
+      - name: Upload Logs
+        uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: logs
+          name: logs-composer-${{ matrix.composer-version }}-${{ matrix.php-version }}-${{ matrix.dependencies }}
           path: var/log
+          retention-days: 7
+
+  coveralls-finish:
+    name: Finish Coveralls
+    needs:
+      - tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
