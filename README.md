@@ -48,7 +48,11 @@ or
 composer exec typo3-coding-standards extension
 ```
 
-or if you want to update the rules, add `-f` option to the end.
+or if you want to update the rules, use the `-f` option
+
+```bash
+composer exec -- typo3-coding-standards extension -f
+```
 
 Have a look at the newly created files in your root folder:
 
