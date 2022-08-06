@@ -20,6 +20,7 @@ omit_containers: [db, dba]
 use_dns_when_possible: true
 composer_version: "2"
 web_environment:
+    - COMPOSER_ROOT_VERSION=0.6.0
     - XDEBUG_MODE=debug,develop,coverage
 nodejs_version: "16"
 
