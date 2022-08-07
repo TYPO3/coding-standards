@@ -292,17 +292,17 @@ jobs:
           - os: ubuntu-latest
             php-version: 'nightly'
             composer-version: '2'
-            dependency-version: 'lowest'
+            dependencies: 'lowest'
             experimental: true
           - os: ubuntu-latest
             php-version: 'nightly'
             composer-version: '2'
-            dependency-version: 'stable'
+            dependencies: 'stable'
             experimental: true
           - os: ubuntu-latest
             php-version: 'nightly'
             composer-version: '2'
-            dependency-version: 'highest'
+            dependencies: 'highest'
             experimental: true
         exclude:
           - os: ubuntu-latest
