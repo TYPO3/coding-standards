@@ -23,7 +23,7 @@ class CsFixerConfig extends Config
     /**
      * @var string
      */
-    private static $defaultHeader = <<<EOF
+    protected static $defaultHeader = <<<EOF
 {header}
 
 It is free software; you can redistribute it and/or modify it under
@@ -39,7 +39,7 @@ EOF;
     /**
      * @var array<string, mixed>
      */
-    private static $typo3Rules = [
+    protected static $typo3Rules = [
         '@DoctrineAnnotation' => true,
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
