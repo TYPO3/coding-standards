@@ -54,7 +54,6 @@ EOF;
         'function_typehint_space' => true,
         'lowercase_cast' => true,
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
-        'modernize_strpos' => true,
         'modernize_types_casting' => true,
         'native_function_casing' => true,
         'new_with_braces' => true,
