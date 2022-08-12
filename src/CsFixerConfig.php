@@ -18,7 +18,7 @@ namespace TYPO3\CodingStandards;
 
 use PhpCsFixer\Config;
 
-class CsFixerConfig extends Config
+class CsFixerConfig extends Config implements CsFixerConfigInterface
 {
     /**
      * @var string
@@ -100,7 +100,7 @@ EOF;
 
     public static function create(): self
     {
-        $config = new self();
+        $config = new static();
         $config
             ->setRiskyAllowed(true)
             ->setRules(self::$typo3Rules)
