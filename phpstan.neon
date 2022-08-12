@@ -1,5 +1,6 @@
 parameters:
 	level: max
+	phpVersion: 70200
 	treatPhpDocTypesAsCertain: false
 
 	paths:
