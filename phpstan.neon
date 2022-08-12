@@ -1,7 +1,7 @@
 parameters:
 	level: max
 	phpVersion: 70200
-	treatPhpDocTypesAsCertain: false
+	treatPhpDocTypesAsCertain: true
 
 	paths:
 		- src

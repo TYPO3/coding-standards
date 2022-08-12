@@ -34,7 +34,7 @@ class SetupTest extends TestCase
 
     /**
      * @param array<string, string> $existingFiles
-     * @param array<string, string> $expectedFiles
+     * @param array<string, bool|string> $expectedFiles
      */
     private function assertScenario(
         string $testType,
@@ -75,7 +75,7 @@ class SetupTest extends TestCase
      * @dataProvider scenariosProvider
      *
      * @param array<string, string> $existingFiles
-     * @param array<string, string> $expectedFiles
+     * @param array<string, bool|string> $expectedFiles
      */
     public function testForProjectScenarios(
         array $existingFiles,
@@ -91,7 +91,7 @@ class SetupTest extends TestCase
      * @dataProvider scenariosProvider
      *
      * @param array<string, string> $existingFiles
-     * @param array<string, string> $expectedFiles
+     * @param array<string, bool|string> $expectedFiles
      */
     public function testForExtensionScenarios(
         array $existingFiles,
