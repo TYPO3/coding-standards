@@ -371,6 +371,7 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           COVERALLS_PARALLEL: true
           COVERALLS_FLAG_NAME: php-${{ matrix.composer-version }}-${{ matrix.php-version }}-${{ matrix.dependencies }}
+        if: ${{ github.event.repository.fork == false }}
         run: |
           composer exec phpcov -- merge --clover var/log/coverage/clover.xml var/log/coverage
           composer global require ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }} php-coveralls/php-coveralls
@@ -393,6 +394,7 @@ jobs:
     steps:
       - name: Coveralls Finished
         uses: coverallsapp/github-action@master
+        if: ${{ github.event.repository.fork == false }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           parallel-finished: true

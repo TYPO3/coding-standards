@@ -16,7 +16,6 @@
         cacheDirectory="var/cache/coverage"
     >
         <include>
-            <file>typo3-coding-standards</file>
             <directory>src</directory>
         </include>
         <report>
@@ -32,7 +31,6 @@
     <!-- Compatibility with phpunit 8.5 -->
     <filter>
         <whitelist>
-            <file>typo3-coding-standards</file>
             <directory>src</directory>
         </whitelist>
     </filter>
