@@ -1,6 +1,6 @@
 parameters:
 	level: max
-	treatPhpDocTypesAsCertain: false
+	treatPhpDocTypesAsCertain: true
 
 	paths:
 		- src
