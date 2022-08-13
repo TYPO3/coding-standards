@@ -100,16 +100,16 @@ EOF;
 
     public static function create(): self
     {
-        $config = new static();
-        $config
+        $static = new static();
+        $static
             ->setRiskyAllowed(true)
             ->setRules(self::$typo3Rules)
         ;
 
-        $finder = $config->getFinder();
+        $finder = $static->getFinder();
         $finder->exclude(['vendor', 'typo3temp', 'var', '.build']);
 
-        return $config;
+        return $static;
     }
 
     /**
@@ -130,6 +130,7 @@ EOF;
         if (!$replaceAll) {
             $header = str_replace('{header}', $header, self::$defaultHeader);
         }
+
         $rules = $this->getRules();
         $rules['header_comment'] = [
             'header' => $header,

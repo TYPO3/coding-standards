@@ -18,31 +18,31 @@ namespace TYPO3\CodingStandards\Tests\Unit;
 
 use TYPO3\CodingStandards\CsFixerConfig;
 
-class CsFixerConfigTest extends TestCase
+final class CsFixerConfigTest extends TestCase
 {
     public function testCreateReturnsCorrectClass(): void
     {
-        /** @var object $config */
-        $config = CsFixerConfig::create();
-        self::assertInstanceOf(CsFixerConfig::class, $config);
-        self::assertTrue($config->getRiskyAllowed());
-        self::assertCount(51, $config->getRules());
+        /** @var object $csFixerConfig */
+        $csFixerConfig = CsFixerConfig::create();
+        self::assertInstanceOf(CsFixerConfig::class, $csFixerConfig);
+        self::assertTrue($csFixerConfig->getRiskyAllowed());
+        self::assertCount(51, $csFixerConfig->getRules());
     }
 
     public function testAddRules(): void
     {
-        $subject = new CsFixerConfig();
-        $subject->addRules(['test_config' => 'value']);
+        $csFixerConfig = new CsFixerConfig();
+        $csFixerConfig->addRules(['test_config' => 'value']);
 
-        self::assertArrayHasKey('test_config', $subject->getRules());
+        self::assertArrayHasKey('test_config', $csFixerConfig->getRules());
     }
 
     public function testSetHeaderSetHeaderOnly(): void
     {
-        $subject = new CsFixerConfig();
-        $subject->setHeader('test_header');
+        $csFixerConfig = new CsFixerConfig();
+        $csFixerConfig->setHeader('test_header');
 
-        self::assertArrayHasKey('header_comment', $subject->getRules());
-        self::assertStringContainsString('test_header', $subject->getRules()['header_comment']['header']);
+        self::assertArrayHasKey('header_comment', $csFixerConfig->getRules());
+        self::assertStringContainsString('test_header', $csFixerConfig->getRules()['header_comment']['header']);
     }
 }
