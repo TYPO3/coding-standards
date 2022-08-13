@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards;
 
-class Setup
+final class Setup
 {
     /**
      * @var string

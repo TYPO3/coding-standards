@@ -18,8 +18,28 @@ namespace TYPO3\CodingStandards\Tests\Unit;
 
 use TYPO3\CodingStandards\Setup;
 
-class SetupTest extends TestCase
+final class SetupTest extends TestCase
 {
+    /**
+     * @var string
+     */
+    private const EDITORCONFIG_WARNING = "A .editorconfig file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+
+    /**
+     * @var string
+     */
+    private const PHPCS_FOUND_DEPRECATED_INFORMATION = "Found deprecated .php_cs file and renamed it to .php-cs-fixer.dist.php.\n";
+
+    /**
+     * @var string
+     */
+    private const PHPCS_FOUND_INFORMATION = "Found .php-cs-fixer.php file and renamed it to .php-cs-fixer.dist.php.\n";
+
+    /**
+     * @var string
+     */
+    private const PHPCS_WARNING = "A .php-cs-fixer.dist.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
+
     /**
      * @param array<string, string> $replacePairs
      */
@@ -45,7 +65,7 @@ class SetupTest extends TestCase
         array $expectedFiles
     ): void {
         $testPath = $this->getTestPath();
-        $subject = new Setup($testPath);
+        $setup = new Setup($testPath);
 
         // create pre existing files
         foreach ($existingFiles as $target => $source) {
@@ -54,19 +74,17 @@ class SetupTest extends TestCase
 
         // call the subject's method
         $methodName = 'for' . ucfirst($testType);
-        self::assertSame($expectedResult, $subject->$methodName($force)); // @phpstan-ignore-line
+        self::assertSame($expectedResult, $setup->$methodName($force)); // @phpstan-ignore-line
         self::expectOutputString($expectedOutput);
 
         // assert files
         foreach ($expectedFiles as $file => $template) {
             if ($template === false) {
                 self::assertFileNotExists($testPath . '/' . $file);
+            } elseif (is_string($template)) {
+                self::assertFileEquals($this->getFilename($template, ['{$typePrefix}' => $testType]), $testPath . '/' . $file);
             } else {
-                if (is_string($template)) {
-                    self::assertFileEquals($this->getFilename($template, ['{$typePrefix}' => $testType]), $testPath . '/' . $file);
-                } else {
-                    self::assertFileExists($testPath . '/' . $file);
-                }
+                self::assertFileExists($testPath . '/' . $file);
             }
         }
     }
@@ -108,11 +126,6 @@ class SetupTest extends TestCase
      */
     public function scenariosProvider(): \Generator
     {
-        $editorconfigWarning = "A .editorconfig file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
-        $phpcsFoundDeprecatedInformation = "Found deprecated .php_cs file and renamed it to .php-cs-fixer.dist.php.\n";
-        $phpcsFoundInformation = "Found .php-cs-fixer.php file and renamed it to .php-cs-fixer.dist.php.\n";
-        $phpcsWarning = "A .php-cs-fixer.dist.php file already exists in your main folder, but the -f option was not set. Nothing copied.\n";
-
         yield 'all files are created' => [
             'existingFiles' => [],
             'force' => false,
@@ -134,7 +147,7 @@ class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => $editorconfigWarning . $phpcsWarning,
+            'expectedOutput' => self::EDITORCONFIG_WARNING . self::PHPCS_WARNING,
             'expectedFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
@@ -148,7 +161,7 @@ class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => $editorconfigWarning,
+            'expectedOutput' => self::EDITORCONFIG_WARNING,
             'expectedFiles' => [
                 '.editorconfig' => 'FIX:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'TPL:{$typePrefix}_php-cs-fixer.dist.php',
@@ -162,7 +175,7 @@ class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => $phpcsWarning,
+            'expectedOutput' => self::PHPCS_WARNING,
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
@@ -176,7 +189,7 @@ class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => $phpcsFoundInformation . $phpcsWarning,
+            'expectedOutput' => self::PHPCS_FOUND_INFORMATION . self::PHPCS_WARNING,
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
@@ -190,7 +203,7 @@ class SetupTest extends TestCase
             ],
             'force' => false,
             'expectedResult' => 1,
-            'expectedOutput' => $phpcsFoundDeprecatedInformation . $phpcsWarning,
+            'expectedOutput' => self::PHPCS_FOUND_DEPRECATED_INFORMATION . self::PHPCS_WARNING,
             'expectedFiles' => [
                 '.editorconfig' => 'TPL:editorconfig.dist',
                 '.php-cs-fixer.dist.php' => 'FIX:php-cs-fixer.dist.php',
