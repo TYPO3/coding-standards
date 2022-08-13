@@ -2,6 +2,7 @@
 
 [![Continuous Integration (CI)](https://github.com/TYPO3/coding-standards/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/TYPO3/coding-standards/actions/workflows/continuous-integration.yml)
 [![Core Synchronization](https://github.com/TYPO3/coding-standards/actions/workflows/core-synchronization.yml/badge.svg)](https://github.com/TYPO3/coding-standards/actions/workflows/core-synchronization.yml)
+[![Coverage Status](https://coveralls.io/repos/github/TYPO3/coding-standards/badge.svg?branch=main)](https://coveralls.io/github/TYPO3/coding-standards?branch=main)
 
 You know the feeling: You work on your own extension, and then contribute to
 TYPO3, and TYPO3 delivers all the nice things to check for proper coding

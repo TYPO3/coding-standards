@@ -18,6 +18,9 @@ namespace TYPO3\CodingStandards\Tests\Unit;
 
 use TYPO3\CodingStandards\Setup;
 
+/**
+ * @covers \TYPO3\CodingStandards\Setup
+ */
 final class SetupTest extends TestCase
 {
     /**
