@@ -102,8 +102,14 @@
 		],
 		"fix:composer:normalize": "@composer normalize",
 		"fix:php": [
+			"@fix:php:rector",
 			"@fix:php:cs"
 		],
-		"fix:php:cs": "php-cs-fixer fix"
+		"fix:php:cs": "php-cs-fixer fix",
+		"fix:php:rector": [
+			"@composer require --dev rector/rector",
+			"@php rector process",
+			"@composer remove --dev rector/rector"
+		]
 	}
 }
