@@ -80,7 +80,7 @@
 			"@ci:composer:require-checker"
 		],
 		"ci:composer:normalize": "@composer normalize --dry-run",
-		"ci:composer:require-checker": "composer-require-checker",
+		"ci:composer:require-checker": "@php composer-require-checker",
 		"ci:composer:validate": "@composer validate",
 		"ci:php": [
 			"@ci:php:lint",
@@ -88,9 +88,9 @@
 			"@ci:php:stan",
 			"@ci:php:unit"
 		],
-		"ci:php:cs": "php-cs-fixer fix -v --dry-run --using-cache no --diff",
-		"ci:php:lint": "phplint --no-progress",
-		"ci:php:stan": "phpstan analyse --no-progress",
+		"ci:php:cs": "@php php-cs-fixer fix -v --dry-run --using-cache no --diff",
+		"ci:php:lint": "@php phplint --no-progress",
+		"ci:php:stan": "@php phpstan analyse --no-progress",
 		"ci:php:unit": "phpunit",
 		"fix": [
 			"@fix:composer",
