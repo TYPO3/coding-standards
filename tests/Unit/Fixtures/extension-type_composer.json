@@ -1,0 +1,6 @@
+{
+	"name": "typo3/cms-extension-test-type",
+	"type": "typo3-cms-extension",
+	"description": "A TYPO3 CMS extension test manifest",
+	"license": "MIT"
+}

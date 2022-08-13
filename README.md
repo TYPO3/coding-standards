@@ -16,8 +16,9 @@ working on your TYPO3 project.
 
 ## Installation
 
-As this is a composer package, execute `composer req --dev typo3/coding-standards`
-in your composer project.
+Since this is a Composer package, run `composer require --dev typo3/coding-standards`
+in your Composer project, which of course includes TYPO3 project or extension or
+any other Composer project.
 
 ## What's in the package?
 
@@ -27,37 +28,47 @@ certain rules to other projects as well. TYPO3 is more than just TYPO3 Core!
 
 ### PHP-CS-Fixer rules
 
-Making sure your PHP files apply to the same rules.
+Ensures that your PHP files are subject to the same rules.
 
 ### .editorconfig
 
 If you work on a team, and you use different IDE settings, `.editorconfig`
 helps you to have the same settings across all editors. It does not matter if
-it is VS-Code, vim or PhpStorm.
+it is VS-Code, vim or PhpStorm, almost every editor supports the `.editorconfig`
+nowadays.
 
-### Setting up the TYPO3 rulesets as boilerplate
+### Setting up the TYPO3 rule sets as boilerplate
 
 Our coding standards file can set this up for you. Run
 
 ```bash
-composer exec typo3-coding-standards project
+composer exec typo3-coding-standards setup
+```
+
+or via the shortcut, which of course works for every command:
+
+```bash
+composer exec t3-cs s
+```
+
+The type `project` or `extension` is automatically detected. If the detection
+does not work for you (please also tell us about your case at
+<https://github.com/TYPO3/coding-standards/issues>), you can specify the
+desired type as parameter like this:
+
+```bash
+composer exec typo3-coding-standards setup project
 ```
 
 or
 
 ```bash
-composer exec typo3-coding-standards extension
-```
-
-or if you want to update the rules, use the `-f` option
-
-```bash
-composer exec -- typo3-coding-standards extension -f
+composer exec typo3-coding-standards setup extension
 ```
 
 Have a look at the newly created files in your root folder:
 
-* .php-cs-fixer.php
+* .php-cs-fixer.dist.php
 * .editorconfig
 
 For projects, the folder `src` is configured by default, but you can
@@ -70,6 +81,67 @@ configurations just like with PHP-CS-Fixer.
 You can decide to commit them to your Git repository, which is the recommended
 way.
 
+### Updating the TYPO3 rule sets
+
+To update the rule sets, run `composer update typo3/coding-standards`. An updated
+PHP-CS-Fixer rule set is applied immediately, but changes to the `.editorconfig`
+file must be applied manually by running `composer exec typo3-coding-standards update`.
+
+This will overwrite your changes in the `.editorconfig` and reset it to the
+TYPO3 default values. Please make sure that your file has been properly
+committed to your repository before proceeding with the update.
+
+You can also reset all files to the TYPO3 defaults by providing the `--force`
+option to the `setup` command:
+
+```bash
+composer exec -- typo3-coding-standards setup --force
+```
+
+Don't forget to provide the two dashes after `exec` if you use options.
+
+### Advanced usage examples
+
+Show a command specific help e.g. with `composer exec typo3-coding-standards help setup`.
+
+It is possible to specify a destination folder for the files or to set up only
+a part of the TYPO3 coding standards, here are some examples.
+
+Setup `.editorconfig` only:
+
+```bash
+composer exec -- typo3-coding-standards setup --rule-set=editorconfig
+```
+
+Setup `.php-cs-fixer.dist.php` in the `Build` folder:
+
+```bash
+composer exec -- typo3-coding-standards setup --target-dir=Build --rule-set=php-cs-fixer
+```
+
+Symfony comes with a great shortcut support for all commands e.g. this is the
+same like the last command above:
+
+```bash
+composer exec -- t3-cs s -d=Build -r=php-cs-fixer
+```
+
+Update the `.editorconfig`:
+
+```bash
+composer exec t3-cs u
+```
+
+Running the script directly not using Composer:
+
+```bash
+vendor/bin/typo3-coding-standards setup
+```
+
+Of course this assumes the binaries are installed by Composer at the default
+location `vendor/bin`. That's why we recommend using `composer exec` in the
+first place becaue Composer is aware of the correct location.
+
 ## Executing the PHP-CS-Fixer
 
 Once you've followed the step above, running PHP CS Fixer works like this:
@@ -78,8 +150,8 @@ Once you've followed the step above, running PHP CS Fixer works like this:
 composer exec php-cs-fixer
 ```
 
-Leave a note on how you set it up on GitHub Actions or GitLab CI/CD so this
-document can be even more helpful for everybody.
+Have a look at our GitHub Actions [Continuous Integration workflow](https://github.com/TYPO3/coding-standards/blob/main/.github/workflows/continuous-integration.yml)
+to get an idea on how to automate your testing workflows using this package.
 
 ## What's next?
 

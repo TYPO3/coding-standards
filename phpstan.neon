@@ -7,3 +7,10 @@ parameters:
 		- src
 		- tests
 		- typo3-coding-standards
+
+	excludePaths:
+		analyse:
+			- tests/Console/Style/SimpleStyle.php
+
+	stubFiles:
+		- stubs/Command.stub

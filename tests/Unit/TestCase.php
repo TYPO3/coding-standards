@@ -24,87 +24,129 @@ abstract class TestCase extends BaseTestCase
     /**
      * @var string
      */
-    private $fixturePath;
+    private static $rootPath;
 
     /**
      * @var string
      */
-    private $testPath;
+    private static $fixturePath;
 
     /**
      * @var string
      */
-    private $templatePath;
+    private static $testPath;
+
+    /**
+     * @var string
+     */
+    private static $templatePath;
 
     /**
      * @var Filesystem
      */
-    private $filesystem;
+    private static $filesystem;
 
-    protected function setUp(): void
+    public static function setUpBeforeClass(): void
     {
-        $this->fixturePath = __DIR__ . '/Fixtures';
-        $this->testPath = dirname(__DIR__, 2) . '/var/tests';
-        $this->templatePath = dirname(__DIR__, 2) . '/templates';
+        parent::setUpBeforeClass();
 
-        $this->filesystem = new Filesystem();
-        $this->filesystem->mkdir($this->testPath);
+        self::$rootPath = dirname(__DIR__, 2);
+        self::$fixturePath = __DIR__ . '/Fixtures';
+        self::$testPath = self::$rootPath . '/../tests';
+        self::$templatePath = self::$rootPath . '/templates';
+
+        self::$filesystem = new Filesystem();
+        self::$filesystem->mkdir(self::$testPath);
     }
 
     protected function tearDown(): void
     {
-        if ($this->filesystem->exists($this->testPath)) {
-            $this->filesystem->remove($this->testPath);
+        if (self::$filesystem->exists(self::$testPath)) {
+            self::$filesystem->remove(self::$testPath);
         }
+
+        parent::tearDown();
     }
 
-    protected function getFilename(string $filename): string
+    protected static function getRootPath(): string
     {
+        return self::$rootPath;
+    }
+
+    /**
+     * @param array<string, string> $replacePairs
+     */
+    protected static function getFilename(string $filename, ?array $replacePairs = null): string
+    {
+        if ($replacePairs !== null) {
+            $filename = strtr($filename, $replacePairs);
+        }
+
         [$prefix, $filename] = explode(':', $filename, 2);
 
         switch ($prefix) {
             case 'TPL':
-                return $this->getTemplateFilename($filename);
+                return self::getTemplateFilename($filename);
 
             case 'FIX':
-                return $this->getFixtureFilename($filename);
+                return self::getFixtureFilename($filename);
 
             default:
                 throw new \RuntimeException(sprintf('Invalid prefix (%s).', $prefix), 1636451407);
         }
     }
 
-    protected function getFixturePath(): string
+    protected static function getFixturePath(): string
     {
-        return $this->fixturePath;
+        return self::$fixturePath;
     }
 
-    protected function getFixtureFilename(string $filename): string
+    protected static function getFixtureFilename(string $filename): string
     {
-        return $this->fixturePath . '/' . $filename;
+        return self::$fixturePath . '/' . $filename;
     }
 
-    protected function getTestPath(?string $subFolder = null): string
+    protected static function getTestPath(?string $subFolder = null): string
     {
+        $fs = self::getFilesystem();
+
+        $testPath = $fs->tempnam(self::$testPath, 'test_');
+
         if ($subFolder !== null) {
-            return $this->testPath . '/' . $subFolder;
+            $testPath .= '/' . $subFolder;
         }
 
-        return $this->testPath;
+        $fs->remove($testPath);
+        $fs->mkdir($testPath);
+        \chdir($testPath);
+
+        return $testPath;
     }
 
-    protected function getTemplatePath(): string
+    protected static function getTemplatePath(): string
     {
-        return $this->templatePath;
+        return self::$templatePath;
     }
 
-    protected function getTemplateFilename(string $filename): string
+    protected static function getTemplateFilename(string $filename): string
     {
-        return $this->templatePath . '/' . $filename;
+        return self::$templatePath . '/' . $filename;
     }
 
-    protected function getFilesystem(): Filesystem
+    protected static function getFilesystem(): Filesystem
     {
-        return $this->filesystem;
+        return self::$filesystem;
+    }
+
+    /**
+     * @param array<string, string> $files
+     */
+    protected static function createFiles(string $testPath, array $files): void
+    {
+        $fs = self::getFilesystem();
+
+        foreach ($files as $target => $source) {
+            $fs->copy(static::getFilename($source), $testPath . '/' . $target);
+        }
     }
 }

@@ -1,0 +1,6 @@
+{
+	"name": "typo3/cms-project",
+	"type": "typo3-cms-project",
+	"description": "A TYPO3 CMS project test manifest",
+	"license": "MIT"
+}

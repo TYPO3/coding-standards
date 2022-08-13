@@ -1,0 +1,11 @@
+{
+	"name": "typo3/cms-extension-test-key",
+	"type": "unknown",
+	"description": "A TYPO3 CMS extension test manifest",
+	"license": "MIT",
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "extension_test_key"
+		}
+	}
+}
