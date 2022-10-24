@@ -314,9 +314,9 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
 
     try {
       const coreCsFixerConfig = await getCoreFileContent('Build/php-cs-fixer/config.php')
-      const coreCsFixerRules = await getRules(coreCsFixerConfig, /setRules\(\[[\n\r]([\s\S]+) {4}\]\)[\n\r]/g)
+      const coreCsFixerRules = await getRules(coreCsFixerConfig, /setRules\(\[\n+([\s\S]+?)\n\s*\]\)/g)
       const localFile = 'src/CsFixerConfig.php'
-      const rulesReplaced = await replaceRules(localFile, /([\s\S]+\$typo3Rules = \[[\n\r])[^\]][^;]*( {4}\];[\s\S]+)/g, coreCsFixerRules)
+      const rulesReplaced = await replaceRules(localFile, /([\s\S]+\$typo3Rules\s*=\s*\[\n)[\s\S]+?(\n\s*\];\n[\s\S]*)/g, coreCsFixerRules)
 
       if (rulesReplaced) {
         await commitChange(`[TASK] Sync ${localFile} with the latest TYPO3 Core version`)
