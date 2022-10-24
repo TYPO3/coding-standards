@@ -46,6 +46,9 @@ final class CsFixerConfigTest extends TestCase
         $csFixerConfig->setHeader('test_header');
 
         self::assertArrayHasKey('header_comment', $csFixerConfig->getRules());
+        self::assertIsArray($csFixerConfig->getRules()['header_comment']);
+        self::assertArrayHasKey('header', $csFixerConfig->getRules()['header_comment']);
+        self::assertIsString($csFixerConfig->getRules()['header_comment']['header']);
         self::assertStringContainsString('test_header', $csFixerConfig->getRules()['header_comment']['header']);
     }
 }

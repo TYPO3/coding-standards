@@ -37,7 +37,7 @@ The TYPO3 project - inspiring people to share!
 EOF;
 
     /**
-     * @var array<string, mixed>
+     * @var array<string, array<string, mixed>|bool>
      */
     protected static $typo3Rules = [
         '@DoctrineAnnotation' => true,
