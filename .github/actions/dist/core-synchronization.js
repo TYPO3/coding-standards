@@ -313,7 +313,7 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
     core.startGroup('Sync PHP Coding Standards Fixer rules with the latest TYPO3 Core version')
 
     try {
-      const coreCsFixerConfig = await getCoreFileContent('Build/php-cs-fixer.php')
+      const coreCsFixerConfig = await getCoreFileContent('Build/php-cs-fixer/config.php')
       const coreCsFixerRules = await getRules(coreCsFixerConfig, /setRules\(\[[\n\r]([\s\S]+) {4}\]\)[\n\r]/g)
       const localFile = 'src/CsFixerConfig.php'
       const rulesReplaced = await replaceRules(localFile, /([\s\S]+\$typo3Rules = \[[\n\r])[^\]][^;]*( {4}\];[\s\S]+)/g, coreCsFixerRules)
