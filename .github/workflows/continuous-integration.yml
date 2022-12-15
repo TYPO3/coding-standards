@@ -144,7 +144,7 @@ jobs:
           coverage: none
           extensions: intl, zip
           ini-values: memory_limit=-1, error_reporting=E_ALL, display_errors=On
-          php-version: latest
+          php-version: '8.1'
 
       - name: Composer Cache Vars
         id: composer-cache-vars
