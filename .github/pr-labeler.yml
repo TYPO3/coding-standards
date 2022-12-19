@@ -60,3 +60,4 @@ checks:
         - enhancement
         - maintenance
         - security
+        - skip-changelog
