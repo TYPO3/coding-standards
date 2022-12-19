@@ -23,8 +23,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Filesystem;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
-use TYPO3\CodingStandards\Console\Command\SetupExtensionCommand;
-use TYPO3\CodingStandards\Console\Command\SetupProjectCommand;
 use TYPO3\CodingStandards\Console\Command\UpdateCommand;
 
 /**
@@ -101,8 +99,6 @@ final class Application extends BaseApplication
 
         // in alphabetical order
         $this->add(new SetupCommand());
-        $this->add(new SetupExtensionCommand());
-        $this->add(new SetupProjectCommand());
         $this->add(new UpdateCommand());
 
         //$this->setDefaultCommand('setup', false);
