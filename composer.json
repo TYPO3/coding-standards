@@ -29,7 +29,7 @@
 		"docs": "https://docs.typo3.org"
 	},
 	"require": {
-		"php": "^7.2 || ^8.0",
+		"php": "^8.0",
 		"ext-json": "*",
 		"friendsofphp/php-cs-fixer": "^3.0",
 		"symfony/console": "^4.4.30 || ^5.3.7 || ^6.0",
@@ -47,7 +47,7 @@
 		"phpstan/phpstan-phpunit": "^1.0",
 		"phpstan/phpstan-strict-rules": "^1.0",
 		"phpstan/phpstan-symfony": "^1.0",
-		"phpunit/phpunit": "^8.5.24 || ^9.5.18",
+		"phpunit/phpunit": "^9.5.18",
 		"symfony/finder": ">=4.4",
 		"symfony/process": ">=4.4"
 	},

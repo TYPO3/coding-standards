@@ -96,7 +96,7 @@ final class SetupCommandTest extends SetupCommandTestCase
 
         foreach ($expectedFiles as $file => $template) {
             if ($template === false) {
-                self::assertFileNotExists($testPath . '/' . $file);
+                self::assertFileDoesNotExist($testPath . '/' . $file);
             } elseif (is_string($template)) {
                 self::assertFileEquals(self::getFilename($template), $testPath . '/' . $file);
             } else {

@@ -53,7 +53,7 @@ abstract class AbstractCliTestCase extends TestCase
 
     public function testVersion(): void
     {
-        self::assertRegExp(
+        self::assertMatchesRegularExpression(
             '/^TYPO3 Coding Standards ' . Application::VERSION . '$/',
             self::executeCliCommand('--version')->getOutput()
         );
