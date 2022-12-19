@@ -180,7 +180,7 @@ jobs:
       matrix:
         php-version:
           - '8.0'
-          - '8.1'
+          - '8.2'
           - 'latest'
         dependencies:
           - 'lowest'
@@ -273,9 +273,9 @@ jobs:
         php-version:
           - '8.0'
           - '8.1'
+          - '8.2'
           - 'latest'
         composer-version:
-          - '1'
           - '2'
         dependencies:
           - 'lowest'
@@ -298,16 +298,6 @@ jobs:
             composer-version: '2'
             dependencies: 'highest'
             experimental: true
-        exclude:
-          - os: ubuntu-latest
-            php-version: '8.0'
-            composer-version: '1'
-          - os: ubuntu-latest
-            php-version: '8.1'
-            composer-version: '1'
-          - os: ubuntu-latest
-            php-version: 'latest'
-            composer-version: '1'
 
     steps:
       - name: Checkout
