@@ -111,7 +111,7 @@ final class SetupTest extends TestCase
         // assert files
         foreach ($expectedFiles as $file => $template) {
             if ($template === false) {
-                self::assertFileNotExists($testPath . '/' . $file);
+                self::assertFileDoesNotExist($testPath . '/' . $file);
             } elseif (is_string($template)) {
                 self::assertFileEquals(self::getFilename($template, ['{$typePrefix}' => $testType]), $testPath . '/' . $file);
             } else {
