@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.6.0...main>
+
+## [v0.6.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.6.0) - 2022-12-19
+
 ### What's Changed Since 0.5.5
 
 #### 🚀 Features
@@ -29,8 +33,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [TASK] Update config location by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/66>
 * [TASK] Update core synchronization regex by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/67>
 * [TASK] Sync files with the latest TYPO3 Core version by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/68>
+* [TASK] Change PHP version for PHP CS job by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/70>
+* [TASK] Replace deprecated set-output command by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/71>
+* [TASK] Update actions by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/72>
+* [TASK] Include skip-changelog label in semver check by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/74>
 
-**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.5.5...main>
+#### 📖 Documentation
+
+* [DOCS] Provide changelog by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/62>
+
+#### ⚠ Breaking
+
+* [FEATURE] Symfony console application by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/39>
+
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.5.5...v0.6.0>
 
 ## [v0.5.5](https://github.com/TYPO3/coding-standards/releases/tag/v0.5.5) - 2022-08-12
 
