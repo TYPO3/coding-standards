@@ -9,7 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.6.0...main>
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.7.0...main>
+
+## [v0.7.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.7.0) - 2022-12-19
+
+### What's Changed Since 0.6.0
+
+#### 🧰 Maintenance
+
+* [!!!][TASK] Increase PHP requirements to 8.0+ by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/75>
+* [TASK] Remove Composer v1 tests by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/78>
+* [!!!][TASK] Remove deprecated commands by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/77>
+* [!!!][TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/53>
+
+#### ⚠ Breaking
+
+* [!!!][TASK] Increase PHP requirements to 8.0+ by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/75>
+* [!!!][TASK] Remove deprecated commands by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/77>
+* [!!!][TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/53>
+
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.6.0...v0.7.0>
 
 ## [v0.6.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.6.0) - 2022-12-19
 
