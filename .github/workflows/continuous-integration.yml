@@ -213,6 +213,8 @@ jobs:
         run: composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
 
       - name: Validation of coding standards for PHP files
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
         continue-on-error: ${{ matrix.experimental }}
         run: composer ci:php:cs
 
