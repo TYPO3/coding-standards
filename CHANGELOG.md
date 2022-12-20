@@ -9,7 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.7.0...main>
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.7.0...0.7>
+
+## [v0.7.1](https://github.com/TYPO3/coding-standards/releases/tag/v0.7.1) - 2022-12-20
+
+### What's Changed Since 0.7.0
+
+#### 🐞 Bug Fixes
+
+* [BUGFIX] Require a PHP-CS-Fixer version that support the PER standard by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/83>
+
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.7.0...v0.7.1>
 
 ## [v0.7.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.7.0) - 2022-12-19
 
