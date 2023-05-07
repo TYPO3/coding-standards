@@ -163,7 +163,7 @@ final class SetupTest extends TestCase
      *   expectedFiles: array<string, bool|string>
      * }>
      */
-    public function scenariosProvider(): \Generator
+    public static function scenariosProvider(): \Generator
     {
         yield 'all files are created' => [
             'existingFiles' => [],
@@ -345,7 +345,7 @@ final class SetupTest extends TestCase
     /**
      * @return \Generator<string, array<string, string>>
      */
-    public function typeDataProvider(): \Generator
+    public static function typeDataProvider(): \Generator
     {
         foreach (Setup::VALID_TYPES as $type) {
             yield $type => [

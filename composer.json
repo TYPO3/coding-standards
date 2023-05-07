@@ -47,7 +47,7 @@
 		"phpstan/phpstan-phpunit": "^1.0",
 		"phpstan/phpstan-strict-rules": "^1.0",
 		"phpstan/phpstan-symfony": "^1.0",
-		"phpunit/phpunit": "^9.5.18",
+		"phpunit/phpunit": "^10.1",
 		"symfony/finder": ">=4.4",
 		"symfony/process": ">=4.4"
 	},

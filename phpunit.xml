@@ -3,21 +3,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
     colors="true"
-    forceCoversAnnotation="true"
+    requireCoverageMetadata="true"
     failOnRisky="true"
     beStrictAboutChangesToGlobalState="true"
     beStrictAboutOutputDuringTests="true"
-    beStrictAboutResourceUsageDuringSmallTests="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutTodoAnnotatedTests="true"
-    beStrictAboutCoversAnnotation="false"
+    beStrictAboutCoverageMetadata="false"
 >
     <coverage
         cacheDirectory="var/cache/coverage"
     >
-        <include>
-            <directory>src</directory>
-        </include>
         <report>
             <html outputDirectory="var/log/coverage/report"/>
             <clover outputFile="var/log/coverage/clover.xml"/>
@@ -28,21 +24,9 @@
             <directory>tests/Unit</directory>
         </testsuite>
     </testsuites>
-    <!-- Compatibility with phpunit 8.5 -->
-    <filter>
-        <whitelist>
-            <directory>src</directory>
-        </whitelist>
-    </filter>
     <logging>
         <junit outputFile="var/log/junit.xml"/>
         <testdoxHtml outputFile="var/log/testdox.html"/>
         <testdoxText outputFile="var/log/testdox.txt"/>
-        <!-- Compatibility with phpunit 8.5 -->
-        <log type="coverage-html" target="var/log/coverage/report"/>
-        <log type="coverage-clover" target="var/log/coverage/clover.xml"/>
-        <log type="junit" target="var/log/junit.xml"/>
-        <log type="testdox-html" target="var/log/testdox.html"/>
-        <log type="testdox-text" target="var/log/testdox.txt"/>
     </logging>
 </phpunit>

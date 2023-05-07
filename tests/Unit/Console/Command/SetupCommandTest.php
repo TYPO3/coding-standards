@@ -34,7 +34,7 @@ final class SetupCommandTest extends SetupCommandTestCase
     /**
      * @return \Generator<string, array<string, string>>
      */
-    public function typeDataProvider(): \Generator
+    public static function typeDataProvider(): \Generator
     {
         foreach (Setup::VALID_TYPES as $type) {
             yield $type => [
@@ -108,7 +108,7 @@ final class SetupCommandTest extends SetupCommandTestCase
     /**
      * @return \Generator<string, array{existingFiles: array<string, string>, targetDir: string, force: bool, input: array<string, array<int, string>|string>, expectedOutput: string, expectedFiles: array<string, bool|string>}>
      */
-    public function setupDataProvider(): \Generator
+    public static function setupDataProvider(): \Generator
     {
         yield 'auto-detect extension from type' => [
             'existingFiles' => [
