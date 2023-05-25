@@ -52,12 +52,12 @@ trait TypeTrait
                     throw new \RuntimeException(sprintf($composerManifestError, 'found'));
                 }
 
-                $composerManifest = file_get_contents($composerManifest);
+                $composerManifest = \file_get_contents($composerManifest);
                 if ($composerManifest === false) {
                     throw new \RuntimeException(sprintf($composerManifestError, 'read')); // @codeCoverageIgnore
                 }
 
-                $composerManifest = json_decode($composerManifest, true);
+                $composerManifest = \json_decode($composerManifest, true);
                 if ($composerManifest === false || !is_array($composerManifest)) {
                     throw new \RuntimeException(sprintf($composerManifestError, 'decoded'));
                 }

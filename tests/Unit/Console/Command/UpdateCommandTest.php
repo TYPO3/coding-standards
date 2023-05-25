@@ -16,9 +16,9 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
-/**
- * @covers \TYPO3\CodingStandards\Console\Command\UpdateCommand
- */
+use TYPO3\CodingStandards\Console\Command\UpdateCommand;
+
+#[\PHPUnit\Framework\Attributes\CoversClass(UpdateCommand::class)]
 final class UpdateCommandTest extends UpdateCommandTestCase
 {
     public function testExecute(): void

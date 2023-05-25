@@ -16,16 +16,13 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
+use TYPO3\CodingStandards\Console\Command\SetupCommand;
 use TYPO3\CodingStandards\Setup;
 
-/**
- * @covers \TYPO3\CodingStandards\Console\Command\SetupCommand
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(SetupCommand::class)]
 final class SetupCommandTest extends SetupCommandTestCase
 {
-    /**
-     * @dataProvider typeDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('typeDataProvider')]
     public function testTypeArgument(string $type): void
     {
         $this->assertExecuteScenario(self::getTestPath(), 'setup', ['type' => $type]);
@@ -70,12 +67,11 @@ final class SetupCommandTest extends SetupCommandTestCase
     }
 
     /**
-     * @dataProvider setupDataProvider
-     *
      * @param array<string, string> $existingFiles
      * @param array<string, array<int, string>|string> $input
      * @param array<string, bool|string> $expectedFiles
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('setupDataProvider')]
     public function testSetup(
         array $existingFiles,
         string $targetDir,

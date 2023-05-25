@@ -21,9 +21,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use TYPO3\CodingStandards\Setup;
 use TYPO3\CodingStandards\Tests\Console\Style\SimpleStyle;
 
-/**
- * @covers \TYPO3\CodingStandards\Setup
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(Setup::class)]
 final class SetupTest extends TestCase
 {
     /**
@@ -121,12 +119,11 @@ final class SetupTest extends TestCase
     }
 
     /**
-     * @dataProvider scenariosProvider
-     *
      * @param array<string, string> $existingFiles
      * @param array<int, string> $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('scenariosProvider')]
     public function testForProjectScenarios(
         array $existingFiles,
         bool $force,
@@ -138,12 +135,11 @@ final class SetupTest extends TestCase
     }
 
     /**
-     * @dataProvider scenariosProvider
-     *
      * @param array<string, string> $existingFiles
      * @param array<int, string> $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('scenariosProvider')]
     public function testForExtensionScenarios(
         array $existingFiles,
         bool $force,
@@ -332,9 +328,7 @@ final class SetupTest extends TestCase
         self::assertTrue($setup->copyEditorConfig(false));
     }
 
-    /**
-     * @dataProvider typeDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('typeDataProvider')]
     public function testCopyPhpCsFixerConfig(string $type): void
     {
         $setup = new Setup(self::getTestPath());

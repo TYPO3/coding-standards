@@ -21,9 +21,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use TYPO3\CodingStandards\Console\Application;
 
 /**
- * @codeCoverageIgnore
  * @internal
  */
+#[\PHPUnit\Framework\Attributes\IgnoreClassForCodeCoverage(Command::class)]
 abstract class Command extends BaseCommand
 {
     public function getProjectDir(): string

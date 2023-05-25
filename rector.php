@@ -41,8 +41,8 @@ return static function (RectorConfig $rectorConfig): void {
 
     // define sets of rules
     $rectorConfig->sets([
-        LevelSetList::UP_TO_PHP_72,
-        DowngradeLevelSetList::DOWN_TO_PHP_72,
+        LevelSetList::UP_TO_PHP_82,
+        DowngradeLevelSetList::DOWN_TO_PHP_81,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
         SetList::DEAD_CODE,
@@ -50,16 +50,14 @@ return static function (RectorConfig $rectorConfig): void {
         SetList::PRIVATIZATION,
         SetList::PSR_4,
         SetList::TYPE_DECLARATION,
-        SetList::TYPE_DECLARATION_STRICT,
         SetList::EARLY_RETURN,
 
         // Symfony rules
-        SymfonyLevelSetList::UP_TO_SYMFONY_44,
-        SymfonySetList::SYMFONY_STRICT,
+        SymfonyLevelSetList::UP_TO_SYMFONY_50,
         SymfonySetList::SYMFONY_CODE_QUALITY,
 
         // PHPUnit rules
-        PHPUnitLevelSetList::UP_TO_PHPUNIT_80,
+        PHPUnitLevelSetList::UP_TO_PHPUNIT_100,
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
         PHPUnitSetList::PHPUNIT_EXCEPTION,
         PHPUnitSetList::REMOVE_MOCKS,

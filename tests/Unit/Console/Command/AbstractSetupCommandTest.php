@@ -18,16 +18,12 @@ namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
+use TYPO3\CodingStandards\Console\Command\AbstractSetupCommand;
 
-/**
- * @covers \TYPO3\CodingStandards\Console\Command\AbstractSetupCommand
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(AbstractSetupCommand::class)]
 final class AbstractSetupCommandTest extends SetupCommandTestCase
 {
-    /**
-     * @var AbstractSetupCommandTestImplementation|null
-     */
-    private $setupCommandTestImplementation;
+    private ?AbstractSetupCommandTestImplementation $setupCommandTestImplementation = null;
 
     protected function getCommand(string $name): Command
     {

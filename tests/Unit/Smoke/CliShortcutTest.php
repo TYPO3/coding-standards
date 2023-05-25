@@ -18,11 +18,10 @@ namespace TYPO3\CodingStandards\Tests\Unit\Smoke;
 
 /**
  * @internal
- *
- * @coversNothing
- * @group covers-nothing
- * @large
  */
+#[\PHPUnit\Framework\Attributes\Group('covers-nothing')]
+#[\PHPUnit\Framework\Attributes\CoversNothing]
+#[\PHPUnit\Framework\Attributes\Large]
 final class CliShortcutTest extends AbstractCliTestCase
 {
     protected static function getCliName(): string
