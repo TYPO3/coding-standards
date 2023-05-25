@@ -24,12 +24,10 @@ class UpdateCommandTestCase extends CommandTestCase
      */
     protected function getInput(string $testPath, array $input = []): array
     {
-        return array_merge(
-            [
-                '--target-dir' => $testPath,
-            ],
-            $input
-        );
+        return [
+            '--target-dir' => $testPath,
+            ...$input,
+        ];
     }
 
     /**

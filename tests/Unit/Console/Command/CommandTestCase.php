@@ -23,10 +23,7 @@ use TYPO3\CodingStandards\Tests\Unit\TestCase;
 
 class CommandTestCase extends TestCase
 {
-    /**
-     * @var Application
-     */
-    private $application;
+    private Application $application;
 
     protected function setUp(): void
     {

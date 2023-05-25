@@ -53,20 +53,11 @@ final class Setup
      */
     public const VALID_RULE_SETS = [self::RULE_SET_EDITORCONFIG, self::RULE_SET_PHP_CS_FIXER];
 
-    /**
-     * @var string
-     */
-    private $targetDir;
+    private readonly string $targetDir;
 
-    /**
-     * @var string
-     */
-    private $templatesPath;
+    private readonly string $templatesPath;
 
-    /**
-     * @var StyleInterface
-     */
-    private $style;
+    private readonly StyleInterface $style;
 
     public function __construct(string $targetDir, StyleInterface $style = null)
     {
@@ -86,7 +77,7 @@ final class Setup
         $this->targetDir = \rtrim($targetDir, '/');
         $this->templatesPath = \dirname(__DIR__) . '/' . 'templates';
 
-        if ($style === null) {
+        if (!$style instanceof StyleInterface) {
             $arrayInput = new ArrayInput([]);
             $arrayInput->setInteractive(false);
             $nullOutput = new NullOutput();

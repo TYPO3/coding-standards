@@ -18,9 +18,7 @@ namespace TYPO3\CodingStandards\Tests\Unit;
 
 use TYPO3\CodingStandards\CsFixerConfig;
 
-/**
- * @covers \TYPO3\CodingStandards\CsFixerConfig
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(CsFixerConfig::class)]
 final class CsFixerConfigTest extends TestCase
 {
     public function testCreateReturnsCorrectClass(): void

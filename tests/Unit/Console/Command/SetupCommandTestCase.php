@@ -24,13 +24,11 @@ class SetupCommandTestCase extends CommandTestCase
      */
     protected function getInput(string $testPath, bool $force = false, array $input = []): array
     {
-        return array_merge(
-            [
-                '--target-dir' => $testPath,
-                '--force' => $force,
-            ],
-            $input
-        );
+        return [
+            '--target-dir' => $testPath,
+            '--force' => $force,
+            ...$input,
+        ];
     }
 
     /**

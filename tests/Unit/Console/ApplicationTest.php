@@ -21,9 +21,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Tests\Unit\TestCase;
 
-/**
- * @covers \TYPO3\CodingStandards\Console\Application
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(Application::class)]
 final class ApplicationTest extends TestCase
 {
     public function testApplication(): void

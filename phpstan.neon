@@ -1,6 +1,6 @@
 parameters:
 	level: max
-	phpVersion: 70200
+	phpVersion: 80100
 	treatPhpDocTypesAsCertain: true
 
 	paths:

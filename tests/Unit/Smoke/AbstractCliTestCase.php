@@ -27,15 +27,9 @@ use TYPO3\CodingStandards\Tests\Unit\TestCase;
  */
 abstract class AbstractCliTestCase extends TestCase
 {
-    /**
-     * @var string
-     */
-    private static $cliCwd;
+    private static string $cliCwd;
 
-    /**
-     * @var string
-     */
-    private static $cliName;
+    private static string $cliName;
 
     abstract protected static function getCliName(): string;
 

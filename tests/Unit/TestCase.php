@@ -21,30 +21,18 @@ use Symfony\Component\Filesystem\Filesystem;
 
 abstract class TestCase extends BaseTestCase
 {
-    /**
-     * @var string
-     */
-    private static $rootPath;
+    private static string $rootPath;
 
     /**
      * @var string
      */
     private static $fixturePath;
 
-    /**
-     * @var string
-     */
-    private static $testPath;
+    private static string $testPath;
 
-    /**
-     * @var string
-     */
-    private static $templatePath;
+    private static string $templatePath;
 
-    /**
-     * @var Filesystem
-     */
-    private static $filesystem;
+    private static Filesystem $filesystem;
 
     public static function setUpBeforeClass(): void
     {
@@ -74,7 +62,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * @param array<string, string> $replacePairs
+     * @param array<string, string>|null $replacePairs
      */
     protected static function getFilename(string $filename, ?array $replacePairs = null): string
     {
@@ -84,16 +72,11 @@ abstract class TestCase extends BaseTestCase
 
         [$prefix, $filename] = explode(':', $filename, 2);
 
-        switch ($prefix) {
-            case 'TPL':
-                return self::getTemplateFilename($filename);
-
-            case 'FIX':
-                return self::getFixtureFilename($filename);
-
-            default:
-                throw new \RuntimeException(sprintf('Invalid prefix (%s).', $prefix), 1636451407);
-        }
+        return match ($prefix) {
+            'TPL' => self::getTemplateFilename($filename),
+            'FIX' => self::getFixtureFilename($filename),
+            default => throw new \RuntimeException(sprintf('Invalid prefix (%s).', $prefix), 1_636_451_407),
+        };
     }
 
     protected static function getFixturePath(): string
