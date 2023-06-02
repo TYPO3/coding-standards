@@ -16,14 +16,22 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Console;
 
+use Composer\Autoload\ClassLoader;
 use RuntimeException;
 use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Filesystem\Filesystem;
-use TYPO3\CodingStandards\Console\Command\SetupCommand;
-use TYPO3\CodingStandards\Console\Command\UpdateCommand;
+use TYPO3\CodingStandards\Console\Event\Application\CreatedEvent;
+use TYPO3\CodingStandards\Console\Event\Application\InitCommandsEvent;
+use TYPO3\CodingStandards\Console\Event\Application\InitDefaultInputDefinitionEvent;
+use TYPO3\CodingStandards\Console\Event\Application\InitTemplatesDirsEvent;
+use TYPO3\CodingStandards\EventListener\InitSubscriber;
+use TYPO3\CodingStandards\EventListener\SetupSubscriber;
+use TYPO3\CodingStandards\Events;
+use TYPO3\CodingStandards\Plugins;
 
 /**
  * @internal
@@ -34,6 +42,22 @@ final class Application extends BaseApplication
      * @var string
      */
     public const VERSION = '0.8.0-DEV';
+
+    private readonly EventDispatcher $eventDispatcher;
+
+    private bool $commandsInitialized = \false;
+
+    /**
+     * @var array<int, string>
+     */
+    private array $templatesDirs = [];
+
+    private ?Plugins $plugins = \null;
+
+    /**
+     * @var array<int, string>
+     */
+    private array $pluginsLoaded = [];
 
     /**
      * getcwd() equivalent which always returns a string.
@@ -65,7 +89,69 @@ final class Application extends BaseApplication
         return $cwd;
     }
 
-    public static function getProjectDir(): string
+    public function __construct(private readonly ?ClassLoader $classLoader = null)
+    {
+        parent::__construct('TYPO3 Coding Standards', self::VERSION);
+
+        $this->eventDispatcher = new EventDispatcher();
+        $this->eventDispatcher->addSubscriber(new InitSubscriber());
+        $this->eventDispatcher->addSubscriber(new SetupSubscriber($this));
+
+        $this->setDispatcher($this->eventDispatcher);
+
+        if ($this->classLoader instanceof ClassLoader) {
+            $this->plugins = new Plugins(
+                $this->classLoader,
+                $this->eventDispatcher,
+            );
+            $this->pluginsLoaded = $this->plugins->load();
+        }
+
+        $createdEvent = new CreatedEvent($this);
+        $this->eventDispatcher->dispatch($createdEvent, Events::APPLICATION_CREATED);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function run(InputInterface $input = null, OutputInterface $output = null): int
+    {
+        $this->initCommands();
+
+        return parent::run($input, $output);
+    }
+
+    public function initCommands(): void
+    {
+        if ($this->commandsInitialized) {
+            return;
+        }
+
+        $initCommandsEvent = new InitCommandsEvent($this);
+        $this->eventDispatcher->dispatch($initCommandsEvent, Events::APPLICATION_INIT_COMMANDS);
+
+        $this->commandsInitialized = \true;
+    }
+
+    public function getEventDispatcher(): EventDispatcher
+    {
+        return $this->eventDispatcher;
+    }
+
+    public function getLongVersion(): string
+    {
+        if ($this->pluginsLoaded !== []) {
+            return \sprintf(
+                "%s\n\nPlugin(s) loaded:\n  <info>%s</info>",
+                parent::getLongVersion(),
+                \implode("\n  ", $this->pluginsLoaded)
+            );
+        }
+
+        return parent::getLongVersion();
+    }
+
+    public function getProjectDir(): string
     {
         return self::getCwd(true);
     }
@@ -73,7 +159,7 @@ final class Application extends BaseApplication
     /**
      * @throws RuntimeException
      */
-    public static function getTargetDir(InputInterface $input): string
+    public function getTargetDir(InputInterface $input): string
     {
         /** @var string|null $targetDir */
         $targetDir = $input->getParameterOption(['--target-dir', '-d'], null, true);
@@ -93,28 +179,31 @@ final class Application extends BaseApplication
         return $targetDir;
     }
 
-    public function __construct()
+    /**
+     * @return array<int, string>
+     */
+    public function getTemplatesDirs(): array
     {
-        parent::__construct('TYPO3 Coding Standards', self::VERSION);
+        if ($this->templatesDirs === []) {
+            $initTemplatesDirsEvent = new InitTemplatesDirsEvent($this, $this->templatesDirs);
+            $this->eventDispatcher->dispatch($initTemplatesDirsEvent, Events::APPLICATION_INIT_TEMPLATES_DIRS);
+            $this->templatesDirs = $initTemplatesDirsEvent->getTemplatesDirs();
+        }
 
-        // in alphabetical order
-        $this->add(new SetupCommand());
-        $this->add(new UpdateCommand());
-
-        //$this->setDefaultCommand('setup', false);
+        return $this->templatesDirs;
     }
 
     protected function getDefaultInputDefinition(): InputDefinition
     {
-        $inputDefinition = parent::getDefaultInputDefinition();
-        $inputDefinition->addOption(new InputOption(
-            '--target-dir',
-            '-d',
-            InputOption::VALUE_REQUIRED,
-            'If specified, use the given directory as target directory',
-            self::getProjectDir()
-        ));
+        $initDefaultInputDefinitionEvent = new InitDefaultInputDefinitionEvent(
+            $this,
+            parent::getDefaultInputDefinition()
+        );
+        $this->eventDispatcher->dispatch(
+            $initDefaultInputDefinitionEvent,
+            Events::APPLICATION_INIT_DEFAULT_INPUT_DEFINITION
+        );
 
-        return $inputDefinition;
+        return $initDefaultInputDefinitionEvent->getDefaultInputDefinition();
     }
 }

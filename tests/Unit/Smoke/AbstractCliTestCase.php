@@ -55,7 +55,10 @@ abstract class AbstractCliTestCase extends TestCase
 
     public function testSetup(): void
     {
-        $command = (new Application())->find('setup');
+        $application = new Application();
+        $application->initCommands();
+
+        $command = $application->find('setup');
 
         $commandTester = new CommandTester($command);
         $commandTester->execute(['--target-dir' => self::getRootPath()]);

@@ -16,15 +16,31 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
+use RuntimeException;
 use Symfony\Component\Console\Command\Command as BaseCommand;
-use Symfony\Component\Console\Input\ArrayInput;
 use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Console\Command\Command;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
+use TYPO3\CodingStandards\Console\Command\UpdateCommand;
+use TYPO3\CodingStandards\Console\Event\Application\Event;
+use TYPO3\CodingStandards\Console\Event\Application\InitDefaultInputDefinitionEvent;
+use TYPO3\CodingStandards\Console\Event\Command\ConfigureEvent;
+use TYPO3\CodingStandards\Console\Event\Command\ExecuteEvent;
+use TYPO3\CodingStandards\Console\Event\Command\Setup\ConfigureEvent as SetupConfigureEvent;
+use TYPO3\CodingStandards\EventListener\InitSubscriber;
+use TYPO3\CodingStandards\EventListener\SetupSubscriber;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(Command::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Application::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(SetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(UpdateCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Event::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(InitDefaultInputDefinitionEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ConfigureEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ExecuteEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SetupConfigureEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(InitSubscriber::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SetupSubscriber::class)]
 final class CommandTest extends CommandTestCase
 {
     private ?CommandTestImplementation $commandTestImplementation = null;
@@ -32,38 +48,35 @@ final class CommandTest extends CommandTestCase
     protected function getCommand(string $name): BaseCommand
     {
         if (!$this->commandTestImplementation instanceof CommandTestImplementation) {
-            $this->commandTestImplementation = new CommandTestImplementation();
+            $this->commandTestImplementation = new CommandTestImplementation($this->getApplication()->getEventDispatcher());
             $this->commandTestImplementation->setApplication($this->getApplication());
         }
 
         return $this->commandTestImplementation;
     }
 
-    public function testGetProjectDir(): void
+    public function testGetApplication(): void
     {
-        $testPath = self::getTestPath();
-
         /** @var CommandTestImplementation $baseCommand */
         $baseCommand = $this->getCommand('');
 
-        self::assertSame($testPath, $baseCommand->getProjectDir());
+        self::assertSame($this->getApplication(), $baseCommand->getApplication());
     }
 
-    public function testGetTargetDir(): void
+    public function testGetApplicationThrowsOnInvalidApplication(): void
     {
-        $testPath = self::getTestPath();
-        \mkdir($testPath . '/test-target');
+        $commandTestImplementation = new CommandTestImplementation($this->getApplication()->getEventDispatcher());
 
-        /** @var CommandTestImplementation $baseCommand */
-        $baseCommand = $this->getCommand('');
+        self::expectException(RuntimeException::class);
+        self::expectExceptionMessageMatches("#Invalid application class given, expected .* but found '<null>'.+#");
 
-        self::assertSame(
-            $testPath,
-            $baseCommand->getTargetDir(new ArrayInput([]))
-        );
-        self::assertSame(
-            $testPath . '/test-target',
-            $baseCommand->getTargetDir(new ArrayInput(['--target-dir' => 'test-target']))
-        );
+        $commandTestImplementation->getApplication();
+    }
+
+    public function testExecute(): void
+    {
+        $commandTester = $this->getCommandTester('');
+
+        self::assertSame(0, $commandTester->execute([]));
     }
 }

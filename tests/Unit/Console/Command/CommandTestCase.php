@@ -21,7 +21,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Tests\Unit\TestCase;
 
-class CommandTestCase extends TestCase
+abstract class CommandTestCase extends TestCase
 {
     private Application $application;
 
@@ -30,6 +30,7 @@ class CommandTestCase extends TestCase
         parent::setUp();
 
         $this->application = new Application();
+        $this->application->initCommands();
     }
 
     protected function getApplication(): Application

@@ -21,11 +21,31 @@ use RuntimeException;
 use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Console\Command\Command;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
+use TYPO3\CodingStandards\Console\Command\UpdateCommand;
+use TYPO3\CodingStandards\Console\Event\Application\Event;
+use TYPO3\CodingStandards\Console\Event\Application\InitDefaultInputDefinitionEvent;
+use TYPO3\CodingStandards\Console\Event\Application\InitTemplatesDirsEvent;
+use TYPO3\CodingStandards\Console\Event\Command\ConfigureEvent;
+use TYPO3\CodingStandards\Console\Event\Command\ExecuteEvent;
+use TYPO3\CodingStandards\Console\Event\Command\Setup\ConfigureEvent as SetupConfigureEvent;
+use TYPO3\CodingStandards\Console\Event\Command\Setup\ExecuteEvent as SetupExecuteEvent;
+use TYPO3\CodingStandards\EventListener\InitSubscriber;
+use TYPO3\CodingStandards\EventListener\SetupSubscriber;
 use TYPO3\CodingStandards\Setup;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(SetupCommand::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Application::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Command::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(UpdateCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Event::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(InitDefaultInputDefinitionEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(InitTemplatesDirsEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ConfigureEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(ExecuteEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SetupConfigureEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SetupExecuteEvent::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(InitSubscriber::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SetupSubscriber::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Setup::class)]
 final class SetupCommandTest extends SetupCommandTestCase
 {

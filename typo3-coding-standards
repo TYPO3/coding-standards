@@ -16,7 +16,7 @@
 /**
  * Loads Composer's autoload.php.
  */
-(static function (): void {
+$classLoader = (static function (): Composer\Autoload\ClassLoader {
     $possibleAutoloaders = [
         __DIR__ . '/../../autoload.php',
         __DIR__ . '/../autoload.php',
@@ -35,11 +35,11 @@
         throw new \RuntimeException(sprintf('Unable to locate autoload.php file from %s.', __FILE__));
     }
 
-    require_once $autoloader;
+    return require_once $autoloader;
 })();
 
 use TYPO3\CodingStandards\Console\Application;
 
-(new Application())->run();
+(new Application($classLoader))->run();
 
 __HALT_COMPILER();

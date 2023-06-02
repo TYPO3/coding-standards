@@ -21,7 +21,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use TYPO3\CodingStandards\Console\Event\Command\Setup\ConfigureEvent;
+use TYPO3\CodingStandards\Console\Event\Command\Setup\ExecuteEvent;
+use TYPO3\CodingStandards\Events;
 use TYPO3\CodingStandards\Setup;
 
 /**
@@ -43,11 +45,18 @@ final class SetupCommand extends Command
     {
         parent::configure();
 
+        $configureEvent = new ConfigureEvent($this, Setup::VALID_RULE_SETS);
+        $this->eventDispatcher->dispatch($configureEvent, Events::COMMAND_SETUP_CONFIGURE);
+
         $this
-            ->addArgument('type', InputArgument::OPTIONAL, sprintf(
-                'Type to setup, valid types are <comment>["%s"]</comment>. If not set, the detection is automatic',
-                implode('","', Setup::VALID_TYPES)
-            ))
+            ->addArgument(
+                'type',
+                InputArgument::OPTIONAL,
+                sprintf(
+                    'Type to setup, valid types are <comment>["%s"]</comment>. If not set, the detection is automatic',
+                    implode('","', [...Setup::VALID_TYPES, ...$configureEvent->getAdditionalTypes()])
+                )
+            )
             ->addOption(
                 'force',
                 'f',
@@ -58,8 +67,11 @@ final class SetupCommand extends Command
                 'rule-set',
                 'r',
                 InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-                'Rule set to set up',
-                Setup::VALID_RULE_SETS
+                sprintf(
+                    'Rule set to set up, valid types are <comment>["%s"]</comment>',
+                    implode('","', [...Setup::VALID_RULE_SETS, ...$configureEvent->getAdditionalRuleSets()])
+                ),
+                $configureEvent->getDefaultRuleSets()
             )
         ;
     }
@@ -90,7 +102,7 @@ final class SetupCommand extends Command
         if (!is_string($type) || $type === '') {
             $composerManifestError = 'Cannot auto-detect type, composer.json cannot be %s. Use the type argument instead.';
 
-            $composerManifest = $this->getProjectDir() . '/composer.json';
+            $composerManifest = $this->getApplication()->getProjectDir() . '/composer.json';
             if (!file_exists($composerManifest)) {
                 throw new RuntimeException(sprintf($composerManifestError, 'found'));
             }
@@ -120,22 +132,23 @@ final class SetupCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $exitCode = parent::execute($input, $output);
+
         $force = $this->getForce($input);
         $ruleSets = $this->getRuleSets($input);
         $type = $this->getType($input);
 
-        $setup = new Setup($this->getTargetDir($input), new SymfonyStyle($input, $output));
+        $executeEvent = new ExecuteEvent(
+            $this,
+            $input,
+            $output,
+            $exitCode,
+            $type,
+            $ruleSets,
+            $force
+        );
+        $this->eventDispatcher->dispatch($executeEvent, Events::COMMAND_SETUP_EXECUTE);
 
-        $result = true;
-
-        if (\in_array(Setup::RULE_SET_EDITORCONFIG, $ruleSets, true)) {
-            $result = $setup->copyEditorConfig($force);
-        }
-
-        if (\in_array(Setup::RULE_SET_PHP_CS_FIXER, $ruleSets, true)) {
-            $result = $setup->copyPhpCsFixerConfig($force, $type) && $result;
-        }
-
-        return $result ? 0 : 1;
+        return $executeEvent->getExitCode();
     }
 }
