@@ -91,16 +91,16 @@ abstract class TestCase extends BaseTestCase
 
     protected static function getTestPath(?string $subFolder = null): string
     {
-        $fs = self::getFilesystem();
+        $filesystem = self::getFilesystem();
 
-        $testPath = $fs->tempnam(self::$testPath, 'test_');
+        $testPath = $filesystem->tempnam(self::$testPath, 'test_');
 
         if ($subFolder !== null) {
             $testPath .= '/' . $subFolder;
         }
 
-        $fs->remove($testPath);
-        $fs->mkdir($testPath);
+        $filesystem->remove($testPath);
+        $filesystem->mkdir($testPath);
         \chdir($testPath);
 
         return $testPath;
@@ -126,10 +126,10 @@ abstract class TestCase extends BaseTestCase
      */
     protected static function createFiles(string $testPath, array $files): void
     {
-        $fs = self::getFilesystem();
+        $filesystem = self::getFilesystem();
 
         foreach ($files as $target => $source) {
-            $fs->copy(static::getFilename($source), $testPath . '/' . $target);
+            $filesystem->copy(static::getFilename($source), $testPath . '/' . $target);
         }
     }
 }
