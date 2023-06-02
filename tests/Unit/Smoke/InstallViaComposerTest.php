@@ -66,7 +66,9 @@ final class InstallViaComposerTest extends TestCase
         try {
             CommandExecutor::create('composer check', self::getRootPath())->getResult();
         } catch (\RuntimeException $runtimeException) {
-            self::markTestIncomplete('Composer check failed. Details:' . "\n" . $runtimeException->getMessage());
+            if (\getenv('EXPERIMENTAL') !== 'true') {
+                self::markTestIncomplete('Composer check failed. Details:' . "\n" . $runtimeException->getMessage());
+            }
         }
     }
 

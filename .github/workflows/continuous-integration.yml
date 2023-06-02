@@ -117,10 +117,9 @@ jobs:
             ${{ runner.os }}-composer-2-
             ${{ runner.os }}-composer-
 
-      - name: Set platform.php for nightly
+      - name: Ignore platfrom requirements for nightly
         if: ${{ matrix.php-version == 'nightly' }}
-        run: |
-          composer config platform.php 8.1.99
+        run: echo "COMPOSER_UPDATE_FLAGS=$COMPOSER_UPDATE_FLAGS --ignore-platform-reqs" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
@@ -204,15 +203,16 @@ jobs:
         if: contains(matrix.dependencies, 'highest')
         run: composer config minimum-stability alpha
 
-      - name: Set platform.php for nightly
+      - name: Ignore platfrom requirements for nightly
         if: ${{ matrix.php-version == 'nightly' }}
-        run: |
-          composer config platform.php 8.1.99
+        run: echo "COMPOSER_UPDATE_FLAGS=$COMPOSER_UPDATE_FLAGS --ignore-platform-reqs" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
 
       - name: Validation of coding standards for PHP files
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
         continue-on-error: ${{ matrix.experimental }}
         run: composer ci:php:cs
 
@@ -284,10 +284,9 @@ jobs:
         if: contains(matrix.dependencies, 'highest')
         run: composer config minimum-stability alpha
 
-      - name: Set platform.php for nightly
+      - name: Ignore platfrom requirements for nightly
         if: ${{ matrix.php-version == 'nightly' }}
-        run: |
-          composer config platform.php 8.1.99
+        run: echo "COMPOSER_UPDATE_FLAGS=$COMPOSER_UPDATE_FLAGS --ignore-platform-reqs" >> $GITHUB_ENV
 
       - name: Install dependencies without deprecation rules
         run: |
@@ -388,10 +387,16 @@ jobs:
         if: ${{ matrix.php-version == 'nightly' }}
         run: echo "COMPOSER_UPDATE_FLAGS=$COMPOSER_UPDATE_FLAGS --ignore-platform-reqs" >> $GITHUB_ENV
 
+      #- name: Set platform.php for nightly
+      #  if: ${{ matrix.php-version == 'nightly' }}
+      #  run: composer config platform.php 8.2.99
+
       - name: Install dependencies
         run: composer update ${{ env.COMPOSER_UPDATE_FLAGS }} ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
 
       - name: Unit Tests
+        env:
+          EXPERIMENTAL: ${{ matrix.experimental }}
         continue-on-error: ${{ matrix.experimental }}
         if: always()
         run: composer ci:php:unit
