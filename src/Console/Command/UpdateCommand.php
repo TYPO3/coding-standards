@@ -36,12 +36,6 @@ final class UpdateCommand extends Command
      */
     protected static $defaultDescription = 'Update the TYPO3 rule sets';
 
-    protected function configure(): void
-    {
-        // @todo remove once symfony 4 support is removed
-        $this->setDescription(static::$defaultDescription);
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $result = (new Setup($this->getTargetDir($input), new SymfonyStyle($input, $output)))->copyEditorConfig(true);

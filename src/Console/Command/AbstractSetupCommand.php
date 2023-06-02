@@ -28,12 +28,6 @@ use TYPO3\CodingStandards\Setup;
 abstract class AbstractSetupCommand extends Command
 {
     /**
-     * @todo remove once symfony 4 support is removed
-     * @var string
-     */
-    protected static $defaultDescription = '';
-
-    /**
      * @var Setup $setup
      */
     protected $setup;
@@ -49,9 +43,6 @@ abstract class AbstractSetupCommand extends Command
         $this
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Replace existing files')
         ;
-
-        // @todo remove once symfony 4 support is removed
-        $this->setDescription(static::$defaultDescription);
     }
 
     protected function getForce(InputInterface $input): bool
