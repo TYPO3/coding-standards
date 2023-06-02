@@ -74,7 +74,7 @@ final class InstallViaComposerTest extends TestCase
     {
         $filesystem = self::getFilesystem();
 
-        $tmpPath = self::getTestPath();
+        $testPath = self::getTestPath();
 
         $initialComposerFileState = [
             'repositories' => [
@@ -89,13 +89,13 @@ final class InstallViaComposerTest extends TestCase
         ];
 
         file_put_contents(
-            $tmpPath . '/composer.json',
+            $testPath . '/composer.json',
             json_encode($initialComposerFileState, JSON_PRETTY_PRINT)
         );
 
-        static::assertCommandsWork(self::STEPS_TO_VERIFY_INSTALLATION, $tmpPath);
+        static::assertCommandsWork(self::STEPS_TO_VERIFY_INSTALLATION, $testPath);
 
-        $filesystem->remove($tmpPath);
+        $filesystem->remove($testPath);
     }
 
     // test that respects `export-ignore` from `.gitattributes` file
@@ -106,7 +106,7 @@ final class InstallViaComposerTest extends TestCase
             self::markTestIncomplete('No zip extension available.');
         }
 
-        $tmpPath = self::getTestPath();
+        $testPath = self::getTestPath();
         $tmpArtifactPath = self::getTestPath();
 
         $fakeVersion = preg_replace('#\-.+#', '', Application::VERSION, 1) . '-alpha987654321';
@@ -124,7 +124,7 @@ final class InstallViaComposerTest extends TestCase
         ];
 
         file_put_contents(
-            $tmpPath . '/composer.json',
+            $testPath . '/composer.json',
             json_encode($initialComposerFileState, JSON_PRETTY_PRINT)
         );
 
@@ -151,7 +151,7 @@ final class InstallViaComposerTest extends TestCase
 
         static::assertCommandsWork($stepsToInitializeArtifact, $cwd);
         static::assertCommandsWork($stepsToPrepareArtifact, $tmpArtifactPath);
-        static::assertCommandsWork(self::STEPS_TO_VERIFY_INSTALLATION, $tmpPath);
+        static::assertCommandsWork(self::STEPS_TO_VERIFY_INSTALLATION, $testPath);
     }
 
     /**

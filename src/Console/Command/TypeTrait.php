@@ -57,7 +57,7 @@ trait TypeTrait
                     throw new \RuntimeException(sprintf($composerManifestError, 'read')); // @codeCoverageIgnore
                 }
 
-                $composerManifest = \json_decode($composerManifest, true);
+                $composerManifest = \json_decode($composerManifest, true, 512, 0);
                 if ($composerManifest === false || !is_array($composerManifest)) {
                     throw new \RuntimeException(sprintf($composerManifestError, 'decoded'));
                 }

@@ -115,7 +115,7 @@
 		"fix:php:cs": "@php php-cs-fixer fix",
 		"fix:php:rector": [
 			"@composer require --dev rector/rector",
-			"@php rector process",
+			"@php rector process --clear-cache",
 			"@composer remove --dev rector/rector"
 		]
 	}
