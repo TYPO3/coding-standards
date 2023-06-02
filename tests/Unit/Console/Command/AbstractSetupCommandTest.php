@@ -27,8 +27,10 @@ final class AbstractSetupCommandTest extends SetupCommandTestCase
 
     protected function getCommand(string $name): Command
     {
-        $this->setupCommandTestImplementation = new AbstractSetupCommandTestImplementation();
-        $this->setupCommandTestImplementation->setApplication($this->getApplication());
+        if (!$this->setupCommandTestImplementation instanceof AbstractSetupCommandTestImplementation) {
+            $this->setupCommandTestImplementation = new AbstractSetupCommandTestImplementation();
+            $this->setupCommandTestImplementation->setApplication($this->getApplication());
+        }
 
         return $this->setupCommandTestImplementation;
     }

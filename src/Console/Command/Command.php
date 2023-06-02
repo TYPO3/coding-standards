@@ -23,7 +23,6 @@ use TYPO3\CodingStandards\Console\Application;
 /**
  * @internal
  */
-#[\PHPUnit\Framework\Attributes\IgnoreClassForCodeCoverage(Command::class)]
 abstract class Command extends BaseCommand
 {
     public function getProjectDir(): string
