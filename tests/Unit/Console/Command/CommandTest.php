@@ -19,16 +19,12 @@ namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use TYPO3\CodingStandards\Console\Application;
-use TYPO3\CodingStandards\Console\Command\AbstractSetupCommand;
 use TYPO3\CodingStandards\Console\Command\Command;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
-use TYPO3\CodingStandards\Console\Command\TypeTrait;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(Command::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Application::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(AbstractSetupCommand::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(SetupCommand::class)]
-#[\PHPUnit\Framework\Attributes\UsesClass(TypeTrait::class)]
 final class CommandTest extends CommandTestCase
 {
     private ?CommandTestImplementation $commandTestImplementation = null;
