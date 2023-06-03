@@ -32,7 +32,6 @@
     <source>
         <include>
             <directory suffix=".php">src</directory>
-            <file>typo3-coding-standards</file>
         </include>
     </source>
 </phpunit>

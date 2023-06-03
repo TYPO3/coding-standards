@@ -13,25 +13,33 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-// load dependencies
+/**
+ * Loads Composer's autoload.php.
+ */
 (static function (): void {
-    $possibleFiles = [__DIR__ . '/../../autoload.php', __DIR__ . '/../autoload.php', __DIR__ . '/vendor/autoload.php'];
-    $file = null;
-    foreach ($possibleFiles as $possibleFile) {
-        if (file_exists($possibleFile)) {
-            $file = $possibleFile;
+    $possibleAutoloaders = [
+        __DIR__ . '/../../autoload.php',
+        __DIR__ . '/../autoload.php',
+        __DIR__ . '/vendor/autoload.php',
+    ];
+    $autoloader = null;
+    foreach ($possibleAutoloaders as $possibleAutoloader) {
+        if (file_exists($possibleAutoloader)) {
+            $autoloader = $possibleAutoloader;
 
             break;
         }
     }
 
-    if ($file === null) {
-        throw new RuntimeException(sprintf('Unable to locate autoload.php file from %s.', __FILE__));
+    if ($autoloader === null) {
+        throw new \RuntimeException(sprintf('Unable to locate autoload.php file from %s.', __FILE__));
     }
 
-    require_once $file;
+    require_once $autoloader;
 })();
 
 use TYPO3\CodingStandards\Console\Application;
 
-return (new Application())->run();
+(new Application())->run();
+
+__HALT_COMPILER();
