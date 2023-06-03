@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit;
 
+use Generator;
+use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use TYPO3\CodingStandards\Setup;
@@ -74,8 +76,8 @@ final class SetupTest extends TestCase
     }
 
     /**
-     * @param array<string, string> $existingFiles
-     * @param array<int, string> $expectedOutput
+     * @param array<string, string>      $existingFiles
+     * @param array<int, string>         $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
     private function assertScenario(
@@ -119,8 +121,8 @@ final class SetupTest extends TestCase
     }
 
     /**
-     * @param array<string, string> $existingFiles
-     * @param array<int, string> $expectedOutput
+     * @param array<string, string>      $existingFiles
+     * @param array<int, string>         $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('scenariosProvider')]
@@ -135,8 +137,8 @@ final class SetupTest extends TestCase
     }
 
     /**
-     * @param array<string, string> $existingFiles
-     * @param array<int, string> $expectedOutput
+     * @param array<string, string>      $existingFiles
+     * @param array<int, string>         $expectedOutput
      * @param array<string, bool|string> $expectedFiles
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('scenariosProvider')]
@@ -151,7 +153,7 @@ final class SetupTest extends TestCase
     }
 
     /**
-     * @return \Generator<string, array{
+     * @return Generator<string, array{
      *   existingFiles: array<string, string>,
      *   force: bool,
      *   expectedResult: int,
@@ -159,7 +161,7 @@ final class SetupTest extends TestCase
      *   expectedFiles: array<string, bool|string>
      * }>
      */
-    public static function scenariosProvider(): \Generator
+    public static function scenariosProvider(): Generator
     {
         yield 'all files are created' => [
             'existingFiles' => [],
@@ -337,9 +339,9 @@ final class SetupTest extends TestCase
     }
 
     /**
-     * @return \Generator<string, array<string, string>>
+     * @return Generator<string, array<string, string>>
      */
-    public static function typeDataProvider(): \Generator
+    public static function typeDataProvider(): Generator
     {
         foreach (Setup::VALID_TYPES as $type) {
             yield $type => [
@@ -352,7 +354,7 @@ final class SetupTest extends TestCase
     {
         $testPath = self::getTestPath() . '/invalid-path';
 
-        self::expectException(\RuntimeException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessageMatches('#.+(invalid-path).+#');
 
         new Setup($testPath);
@@ -375,7 +377,7 @@ final class SetupTest extends TestCase
 
     public function testInvalidTypeThrows(): void
     {
-        self::expectException(\RuntimeException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessageMatches('#.+(type).+#');
 
         $setup = new Setup(self::getTestPath());

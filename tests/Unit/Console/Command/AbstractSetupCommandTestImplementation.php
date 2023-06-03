@@ -25,13 +25,6 @@ use TYPO3\CodingStandards\Console\Command\AbstractSetupCommand;
  */
 final class AbstractSetupCommandTestImplementation extends AbstractSetupCommand
 {
-    //protected static $defaultName = 'setup:editor-config';
-
-    /**
-     * @ var string
-     */
-    //protected static $defaultDescription = 'Setting up the TYPO3 editorconfig ruleset';
-
     protected function executeSetup(InputInterface $input, OutputInterface $output): int
     {
         //throw new \LogicException('Call to executeSetup()', 1637417318);

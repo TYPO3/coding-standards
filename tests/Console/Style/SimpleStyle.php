@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the TYPO3 project.
  *
@@ -61,14 +63,14 @@ class SimpleStyle extends OutputStyle
     /**
      * Formats a message as a block of text.
      *
-     * @param string|array $messages The message to write in the block
+     * @param array|string $messages The message to write in the block
      * @param string|null  $type     The block type (added in [] on first line)
      * @param string|null  $style    The style to apply to the whole block
      * @param string       $prefix   The prefix for the block
      * @param bool         $padding  Whether to add vertical padding
      * @param bool         $escape   Whether to escape the message
      */
-    public function block($messages, $type = null, $style = null, $prefix = ' ', $padding = false, $escape = true)
+    public function block($messages, $type = null, $style = null, $prefix = ' ', $padding = false, $escape = true): void
     {
         $messages = \is_array($messages) ? array_values($messages) : [$messages];
 
@@ -78,7 +80,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function title($message)
+    public function title($message): void
     {
         $this->writeln([
             sprintf('<comment>%s</>', OutputFormatter::escapeTrailingBackslash($message)),
@@ -88,7 +90,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function section($message)
+    public function section($message): void
     {
         $this->writeln([
             sprintf('<comment>%s</>', OutputFormatter::escapeTrailingBackslash($message)),
@@ -98,11 +100,9 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function listing(array $elements)
+    public function listing(array $elements): void
     {
-        $elements = array_map(function ($element) {
-            return sprintf(' * %s', $element);
-        }, $elements);
+        $elements = array_map(fn ($element) => sprintf(' * %s', $element), $elements);
 
         $this->writeln($elements);
     }
@@ -110,7 +110,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function text($message)
+    public function text($message): void
     {
         $messages = \is_array($message) ? array_values($message) : [$message];
         foreach ($messages as $message) {
@@ -121,9 +121,9 @@ class SimpleStyle extends OutputStyle
     /**
      * Formats a command comment.
      *
-     * @param string|array $message
+     * @param array|string $message
      */
-    public function comment($message)
+    public function comment($message): void
     {
         $this->block($message, null, null, '<fg=default;bg=default> // </>', false, false);
     }
@@ -131,7 +131,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function success($message)
+    public function success($message): void
     {
         $this->block($message, 'OK', 'fg=black;bg=green', ' ', true);
     }
@@ -139,7 +139,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function error($message)
+    public function error($message): void
     {
         $this->block($message, 'ERROR', 'fg=white;bg=red', ' ', true);
     }
@@ -147,7 +147,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function warning($message)
+    public function warning($message): void
     {
         $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ', true);
     }
@@ -155,7 +155,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function note($message)
+    public function note($message): void
     {
         $this->block($message, 'NOTE', 'fg=yellow', ' ! ');
     }
@@ -163,7 +163,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function caution($message)
+    public function caution($message): void
     {
         $this->block($message, 'CAUTION', 'fg=white;bg=red', ' ! ', true);
     }
@@ -171,7 +171,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function table(array $headers, array $rows)
+    public function table(array $headers, array $rows): void
     {
         $style = clone Table::getStyleDefinition('symfony-style-guide');
         $style->setCellHeaderFormat('<info>%s</info>');
@@ -188,7 +188,7 @@ class SimpleStyle extends OutputStyle
     /**
      * Formats a horizontal table.
      */
-    public function horizontalTable(array $headers, array $rows)
+    public function horizontalTable(array $headers, array $rows): void
     {
         $style = clone Table::getStyleDefinition('symfony-style-guide');
         $style->setCellHeaderFormat('<info>%s</info>');
@@ -211,9 +211,9 @@ class SimpleStyle extends OutputStyle
      * * ['key' => 'value']
      * * new TableSeparator()
      *
-     * @param string|array|TableSeparator ...$list
+     * @param array|string|TableSeparator ...$list
      */
-    public function definitionList(...$list)
+    public function definitionList(...$list): void
     {
         $style = clone Table::getStyleDefinition('symfony-style-guide');
         $style->setCellHeaderFormat('<info>%s</info>');
@@ -296,7 +296,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function progressStart($max = 0)
+    public function progressStart($max = 0): void
     {
         $this->progressBar = $this->createProgressBar($max);
         $this->progressBar->start();
@@ -305,7 +305,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function progressAdvance($step = 1)
+    public function progressAdvance($step = 1): void
     {
         $this->getProgressBar()->advance($step);
     }
@@ -313,7 +313,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function progressFinish()
+    public function progressFinish(): void
     {
         $this->getProgressBar()->finish();
         $this->newLine(2);
@@ -362,7 +362,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function writeln($messages, $type = self::OUTPUT_NORMAL)
+    public function writeln($messages, $type = self::OUTPUT_NORMAL): void
     {
         if (!is_iterable($messages)) {
             $messages = [$messages];
@@ -377,7 +377,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL)
+    public function write($messages, $newline = false, $type = self::OUTPUT_NORMAL): void
     {
         if (!is_iterable($messages)) {
             $messages = [$messages];
@@ -392,7 +392,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function newLine($count = 1)
+    public function newLine($count = 1): void
     {
         parent::newLine($count);
         $this->bufferedOutput->write(str_repeat("\n", $count));

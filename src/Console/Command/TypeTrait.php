@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Console\Command;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -39,6 +40,9 @@ trait TypeTrait
         ));
     }
 
+    /**
+     * @throws RuntimeException
+     */
     private function getType(InputInterface $input): string
     {
         if ($this->type === '') {
@@ -49,17 +53,17 @@ trait TypeTrait
 
                 $composerManifest = $this->getProjectDir() . '/composer.json';
                 if (!file_exists($composerManifest)) {
-                    throw new \RuntimeException(sprintf($composerManifestError, 'found'));
+                    throw new RuntimeException(sprintf($composerManifestError, 'found'));
                 }
 
                 $composerManifest = \file_get_contents($composerManifest);
                 if ($composerManifest === false) {
-                    throw new \RuntimeException(sprintf($composerManifestError, 'read')); // @codeCoverageIgnore
+                    throw new RuntimeException(sprintf($composerManifestError, 'read')); // @codeCoverageIgnore
                 }
 
                 $composerManifest = \json_decode($composerManifest, true, 512, 0);
                 if ($composerManifest === false || !is_array($composerManifest)) {
-                    throw new \RuntimeException(sprintf($composerManifestError, 'decoded'));
+                    throw new RuntimeException(sprintf($composerManifestError, 'decoded'));
                 }
 
                 if (

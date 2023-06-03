@@ -24,17 +24,17 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
      * @var string
      */
     protected static $defaultHeader = <<<EOF
-{header}
+        {header}
 
-It is free software; you can redistribute it and/or modify it under
-the terms of the GNU General Public License, either version 2
-of the License, or any later version.
+        It is free software; you can redistribute it and/or modify it under
+        the terms of the GNU General Public License, either version 2
+        of the License, or any later version.
 
-For the full copyright and license information, please read the
-LICENSE.txt file that was distributed with this source code.
+        For the full copyright and license information, please read the
+        LICENSE.txt file that was distributed with this source code.
 
-The TYPO3 project - inspiring people to share!
-EOF;
+        The TYPO3 project - inspiring people to share!
+        EOF;
 
     /**
      * @var array<string, array<string, mixed>|bool>

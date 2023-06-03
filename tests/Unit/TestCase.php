@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace TYPO3\CodingStandards\Tests\Unit;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use RuntimeException;
 use Symfony\Component\Filesystem\Filesystem;
 
 abstract class TestCase extends BaseTestCase
@@ -75,7 +76,7 @@ abstract class TestCase extends BaseTestCase
         return match ($prefix) {
             'TPL' => self::getTemplateFilename($filename),
             'FIX' => self::getFixtureFilename($filename),
-            default => throw new \RuntimeException(sprintf('Invalid prefix (%s).', $prefix), 1_636_451_407),
+            default => throw new RuntimeException(sprintf('Invalid prefix (%s).', $prefix), 1_636_451_407),
         };
     }
 
