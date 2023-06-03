@@ -17,16 +17,26 @@ declare(strict_types=1);
 namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
 use RuntimeException;
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\ArrayInput;
+use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Console\Command\AbstractSetupCommand;
+use TYPO3\CodingStandards\Console\Command\Command;
+use TYPO3\CodingStandards\Console\Command\SetupCommand;
+use TYPO3\CodingStandards\Console\Command\TypeTrait;
+use TYPO3\CodingStandards\Setup;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(AbstractSetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Application::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Command::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(TypeTrait::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Setup::class)]
 final class AbstractSetupCommandTest extends SetupCommandTestCase
 {
     private ?AbstractSetupCommandTestImplementation $setupCommandTestImplementation = null;
 
-    protected function getCommand(string $name): Command
+    protected function getCommand(string $name): BaseCommand
     {
         if (!$this->setupCommandTestImplementation instanceof AbstractSetupCommandTestImplementation) {
             $this->setupCommandTestImplementation = new AbstractSetupCommandTestImplementation();

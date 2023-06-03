@@ -18,10 +18,17 @@ namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
 use Generator;
 use RuntimeException;
+use TYPO3\CodingStandards\Console\Application;
+use TYPO3\CodingStandards\Console\Command\AbstractSetupCommand;
+use TYPO3\CodingStandards\Console\Command\Command;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
 use TYPO3\CodingStandards\Setup;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(SetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Application::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(AbstractSetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Command::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(Setup::class)]
 final class SetupCommandTest extends SetupCommandTestCase
 {
     #[\PHPUnit\Framework\Attributes\DataProvider('typeDataProvider')]

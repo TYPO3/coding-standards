@@ -9,7 +9,7 @@
     beStrictAboutOutputDuringTests="true"
     beStrictAboutTestsThatDoNotTestAnything="true"
     beStrictAboutTodoAnnotatedTests="true"
-    beStrictAboutCoverageMetadata="false"
+    beStrictAboutCoverageMetadata="true"
 >
     <coverage
         cacheDirectory="var/cache/coverage"
