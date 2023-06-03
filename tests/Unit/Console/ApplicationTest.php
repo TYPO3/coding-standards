@@ -20,9 +20,15 @@ use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use TYPO3\CodingStandards\Console\Application;
+use TYPO3\CodingStandards\Console\Command\AbstractSetupCommand;
+use TYPO3\CodingStandards\Console\Command\SetupCommand;
+use TYPO3\CodingStandards\Console\Command\TypeTrait;
 use TYPO3\CodingStandards\Tests\Unit\TestCase;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(Application::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(AbstractSetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(SetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(TypeTrait::class)]
 final class ApplicationTest extends TestCase
 {
     public function testApplication(): void
