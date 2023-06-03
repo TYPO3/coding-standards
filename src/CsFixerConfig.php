@@ -101,16 +101,21 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
         parent::__construct($name);
     }
 
-    public static function create(): self
+    public static function create(): static
     {
         $static = new static();
         $static
             ->setRiskyAllowed(true)
-            ->setRules(self::$typo3Rules)
+            ->setRules(static::$typo3Rules)
         ;
-
-        $finder = $static->getFinder();
-        $finder->exclude(['vendor', 'typo3temp', 'var', '.build']);
+        $static->getFinder()
+            ->exclude([
+                '.build',
+                'typo3temp',
+                'var',
+                'vendor',
+            ])
+        ;
 
         return $static;
     }
@@ -118,7 +123,7 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
     /**
      * @param array<string, mixed> $rules
      */
-    public function addRules(array $rules): self
+    public function addRules(array $rules): static
     {
         $rules = array_replace_recursive($this->getRules(), $rules);
         $this->setRules($rules);
@@ -129,9 +134,9 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
     public function setHeader(
         string $header = 'This file is part of the TYPO3 CMS project.',
         bool $replaceAll = false
-    ): self {
+    ): static {
         if (!$replaceAll) {
-            $header = str_replace('{header}', $header, self::$defaultHeader);
+            $header = str_replace('{header}', $header, static::$defaultHeader);
         }
 
         $rules = $this->getRules();
