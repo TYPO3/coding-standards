@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Style\StyleInterface;
@@ -59,6 +60,9 @@ final class Setup
 
     private readonly StyleInterface $style;
 
+    /**
+     * @throws RuntimeException
+     */
     public function __construct(string $targetDir, StyleInterface $style = null)
     {
         if ($targetDir === '') {
@@ -66,7 +70,7 @@ final class Setup
         }
 
         if (!\is_dir($targetDir)) {
-            throw new \RuntimeException(sprintf("Target directory '%s' does not exist.", $targetDir));
+            throw new RuntimeException(sprintf("Target directory '%s' does not exist.", $targetDir));
         }
 
         // Normalize separators on Windows
@@ -109,10 +113,13 @@ final class Setup
         return $result ? 0 : 1;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public function copyPhpCsFixerConfig(bool $force, string $type): bool
     {
         if (!in_array($type, self::VALID_TYPES, true)) {
-            throw new \RuntimeException(sprintf('Invalid type (%s) specified.', $type));
+            throw new RuntimeException(sprintf('Invalid type (%s) specified.', $type));
         }
 
         $targetFile = '.php-cs-fixer.dist.php';

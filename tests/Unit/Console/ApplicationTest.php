@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit\Console;
 
+use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Tester\ApplicationTester;
 use TYPO3\CodingStandards\Console\Application;
@@ -60,7 +61,7 @@ final class ApplicationTest extends TestCase
 
     public function testGetTargetDirThrowsOnInvalidPath(): void
     {
-        self::expectException(\RuntimeException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessageMatches('#Invalid target directory specified, /.*/invalid-target does not exist.#');
 
         self::getTestPath();

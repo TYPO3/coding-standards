@@ -19,8 +19,9 @@ namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 class UpdateCommandTestCase extends CommandTestCase
 {
     /**
-     * @param array<string, string|string[]|bool|null> $input
-     * @return array<string, string|string[]|bool|null>
+     * @param array<string, bool|string|string[]|null> $input
+     *
+     * @return array<string, bool|string|string[]|null>
      */
     protected function getInput(string $testPath, array $input = []): array
     {
@@ -31,7 +32,7 @@ class UpdateCommandTestCase extends CommandTestCase
     }
 
     /**
-     * @param array<string, string|string[]|bool|null> $input
+     * @param array<string, bool|string|string[]|null> $input
      */
     protected function assertExecuteScenario(string $testPath, string $commandName, array $input = []): void
     {

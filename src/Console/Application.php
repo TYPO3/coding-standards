@@ -36,7 +36,7 @@ final class Application extends BaseApplication
     public const VERSION = '0.8.0-DEV';
 
     /**
-     * getcwd() equivalent which always returns a string
+     * getcwd() equivalent which always returns a string.
      *
      * @throws RuntimeException
      */

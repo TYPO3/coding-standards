@@ -16,6 +16,8 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
+use Generator;
+use RuntimeException;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
 use TYPO3\CodingStandards\Setup;
 
@@ -29,9 +31,9 @@ final class SetupCommandTest extends SetupCommandTestCase
     }
 
     /**
-     * @return \Generator<string, array<string, string>>
+     * @return Generator<string, array<string, string>>
      */
-    public static function typeDataProvider(): \Generator
+    public static function typeDataProvider(): Generator
     {
         foreach (Setup::VALID_TYPES as $type) {
             yield $type => [
@@ -46,7 +48,7 @@ final class SetupCommandTest extends SetupCommandTestCase
 
         $commandTester = $this->getCommandTester('setup');
 
-        self::expectException(\RuntimeException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessageMatches('#.+(type).+#');
 
         $commandTester->execute($this->getInput($testPath));
@@ -60,16 +62,16 @@ final class SetupCommandTest extends SetupCommandTestCase
 
         $commandTester = $this->getCommandTester('setup');
 
-        self::expectException(\RuntimeException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessageMatches('#.+(type).+#');
 
         $commandTester->execute($this->getInput($testPath));
     }
 
     /**
-     * @param array<string, string> $existingFiles
+     * @param array<string, string>                    $existingFiles
      * @param array<string, array<int, string>|string> $input
-     * @param array<string, bool|string> $expectedFiles
+     * @param array<string, bool|string>               $expectedFiles
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('setupDataProvider')]
     public function testSetup(
@@ -102,9 +104,16 @@ final class SetupCommandTest extends SetupCommandTestCase
     }
 
     /**
-     * @return \Generator<string, array{existingFiles: array<string, string>, targetDir: string, force: bool, input: array<string, array<int, string>|string>, expectedOutput: string, expectedFiles: array<string, bool|string>}>
+     * @return Generator<string, array{
+     *   existingFiles: array<string, string>,
+     *   targetDir: string,
+     *   force: bool,
+     *   input: array<string, array<int, string>|string>,
+     *   expectedOutput: string,
+     *   expectedFiles: array<string, bool|string>
+     * }>
      */
-    public static function setupDataProvider(): \Generator
+    public static function setupDataProvider(): Generator
     {
         yield 'auto-detect extension from type' => [
             'existingFiles' => [

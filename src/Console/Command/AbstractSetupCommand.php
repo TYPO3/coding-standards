@@ -28,7 +28,7 @@ use TYPO3\CodingStandards\Setup;
 abstract class AbstractSetupCommand extends Command
 {
     /**
-     * @var Setup $setup
+     * @var Setup
      */
     protected $setup;
 

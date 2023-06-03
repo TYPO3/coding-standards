@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace TYPO3\CodingStandards\Tests\Unit\Smoke;
 
 use Keradus\CliExecutor\CommandExecutor;
+use RuntimeException;
 use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Tests\Unit\TestCase;
 
@@ -53,19 +54,19 @@ final class InstallViaComposerTest extends TestCase
 
         try {
             CommandExecutor::create('php --version', __DIR__)->getResult();
-        } catch (\RuntimeException $runtimeException) {
+        } catch (RuntimeException $runtimeException) {
             self::markTestIncomplete('Missing `php` env script. Details:' . "\n" . $runtimeException->getMessage());
         }
 
         try {
             CommandExecutor::create('composer --version', __DIR__)->getResult();
-        } catch (\RuntimeException $runtimeException) {
+        } catch (RuntimeException $runtimeException) {
             self::markTestIncomplete('Missing `composer` env script. Details:' . "\n" . $runtimeException->getMessage());
         }
 
         try {
             CommandExecutor::create('composer check', self::getRootPath())->getResult();
-        } catch (\RuntimeException $runtimeException) {
+        } catch (RuntimeException $runtimeException) {
             if (\getenv('EXPERIMENTAL') !== 'true') {
                 self::markTestIncomplete('Composer check failed. Details:' . "\n" . $runtimeException->getMessage());
             }

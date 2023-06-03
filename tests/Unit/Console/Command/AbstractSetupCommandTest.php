@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace TYPO3\CodingStandards\Tests\Unit\Console\Command;
 
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use TYPO3\CodingStandards\Console\Command\AbstractSetupCommand;
@@ -50,7 +51,7 @@ final class AbstractSetupCommandTest extends SetupCommandTestCase
 
         $commandTester = $this->getCommandTester('');
 
-        self::expectException(\RuntimeException::class);
+        self::expectException(RuntimeException::class);
         self::expectExceptionMessageMatches('#.+(invalid-path).+#');
 
         $commandTester->execute($this->getInput($testPath . '/invalid-path'));
