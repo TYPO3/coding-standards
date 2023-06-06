@@ -202,30 +202,6 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
   }
 
   /**
-   * Returns the default branch of the repository.
-   *
-   * @returns {string}
-   */
-  async function getDefaultBranch() {
-    if (context.payload.repository.default_branch !== undefined) {
-      return context.payload.repository.default_branch
-    }
-
-    const response = await github.rest.repos.get({
-      owner: context.repo.owner,
-      repo: context.repo.repo,
-    })
-
-    debug(response)
-
-    if (response.status !== 200) {
-      throw new Error(`Get repository failed (${response.status}).`)
-    }
-
-    return response.data.default_branch
-  }
-
-  /**
    * Creates a pull request for the given branch and returns its number.
    *
    * @param {string} branch
@@ -234,19 +210,18 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
   async function createPullRequest(
     branch
   ) {
-    const defaultBranch = await getDefaultBranch()
 
     debug(context.repo.owner)
     debug(context.repo.repo)
+    debug(context.ref)
     debug(branch)
-    debug(defaultBranch)
 
     const response = await github.rest.pulls.create({
       owner: context.repo.owner,
       repo: context.repo.repo,
       title: "[TASK] Sync files with the latest TYPO3 Core version",
-      head: branch,
-      base: defaultBranch,
+      head: `${branch}-${context.ref}`,
+      base: context.ref,
       body: `- [ ] Update rules count (https://github.com/TYPO3/coding-standards/edit/${branch}/tests/Unit/CsFixerConfigTest.php)`,
       maintainer_can_modify: true,
       draft: true,
