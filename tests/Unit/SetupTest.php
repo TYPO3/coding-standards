@@ -97,7 +97,7 @@ final class SetupTest extends TestCase
         $bufferedOutput = new BufferedOutput();
         $simpleStyle = new SimpleStyle($arrayInput, $bufferedOutput);
 
-        $setup = new Setup($testPath, $simpleStyle);
+        $setup = new Setup($simpleStyle, $testPath);
 
         // create pre existing files
         self::createFiles($testPath, $existingFiles);
@@ -325,7 +325,7 @@ final class SetupTest extends TestCase
 
     public function testCopyEditorConfig(): void
     {
-        $setup = new Setup(self::getTestPath());
+        $setup = new Setup(null, self::getTestPath());
 
         self::assertTrue($setup->copyEditorConfig(false));
     }
@@ -333,7 +333,7 @@ final class SetupTest extends TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('typeDataProvider')]
     public function testCopyPhpCsFixerConfig(string $type): void
     {
-        $setup = new Setup(self::getTestPath());
+        $setup = new Setup(null, self::getTestPath());
 
         self::assertTrue($setup->copyPhpCsFixerConfig(false, $type));
     }
@@ -350,14 +350,34 @@ final class SetupTest extends TestCase
         }
     }
 
-    public function testInvalidPathThrows(): void
+    public function testGetTemplateFilePathThrowsOnInvalidTemplate(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessageMatches('#.+(invalid-file).+#');
+
+        $setup = new Setup(null, self::getTestPath());
+
+        $setup->getTemplateFilePath('invalid-file');
+    }
+
+    public function testInvalidTargetPathThrows(): void
     {
         $testPath = self::getTestPath() . '/invalid-path';
 
         self::expectException(RuntimeException::class);
-        self::expectExceptionMessageMatches('#.+(invalid-path).+#');
+        self::expectExceptionMessageMatches('#(Target directory).+(invalid-path).+#');
 
-        new Setup($testPath);
+        new Setup(null, $testPath);
+    }
+
+    public function testInvalidTemplatesPathThrows(): void
+    {
+        $testPath = self::getTestPath() . '/invalid-path';
+
+        self::expectException(RuntimeException::class);
+        self::expectExceptionMessageMatches('#(Templates directory).+(invalid-path).+#');
+
+        new Setup(null, '', [$testPath]);
     }
 
     public function testIoIsCreated(): void
@@ -369,7 +389,7 @@ final class SetupTest extends TestCase
         $bufferedOutput = new BufferedOutput();
         $simpleStyle = new SimpleStyle($arrayInput, $bufferedOutput);
 
-        $setup = new Setup(self::getTestPath(), $simpleStyle);
+        $setup = new Setup($simpleStyle, self::getTestPath());
 
         self::assertTrue($setup->copyEditorConfig(false));
         self::assertStringContainsString('[OK]', $bufferedOutput->fetch());
@@ -380,7 +400,7 @@ final class SetupTest extends TestCase
         self::expectException(RuntimeException::class);
         self::expectExceptionMessageMatches('#.+(type).+#');
 
-        $setup = new Setup(self::getTestPath());
+        $setup = new Setup(null, self::getTestPath());
         $setup->copyPhpCsFixerConfig(false, 'invalid-type');
     }
 }

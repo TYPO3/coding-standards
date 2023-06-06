@@ -18,8 +18,9 @@ namespace TYPO3\CodingStandards\Console\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use TYPO3\CodingStandards\Setup;
+use TYPO3\CodingStandards\Console\Event\Command\Update\ConfigureEvent;
+use TYPO3\CodingStandards\Console\Event\Command\Update\ExecuteEvent;
+use TYPO3\CodingStandards\Events;
 
 /**
  * @internal
@@ -36,10 +37,26 @@ final class UpdateCommand extends Command
      */
     protected static $defaultDescription = 'Update the TYPO3 rule sets';
 
+    protected function configure(): void
+    {
+        parent::configure();
+
+        $configureEvent = new ConfigureEvent($this);
+        $this->eventDispatcher->dispatch($configureEvent, Events::COMMAND_UPDATE_CONFIGURE);
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $result = (new Setup($this->getTargetDir($input), new SymfonyStyle($input, $output)))->copyEditorConfig(true);
+        $exitCode = parent::execute($input, $output);
 
-        return $result ? 0 : 1;
+        $executeEvent = new ExecuteEvent(
+            $this,
+            $input,
+            $output,
+            $exitCode
+        );
+        $this->eventDispatcher->dispatch($executeEvent, Events::COMMAND_UPDATE_EXECUTE);
+
+        return $executeEvent->getExitCode();
     }
 }

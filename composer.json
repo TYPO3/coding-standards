@@ -31,8 +31,11 @@
 	"require": {
 		"php": "^8.1",
 		"ext-json": "*",
+		"composer-runtime-api": "^2.1",
 		"friendsofphp/php-cs-fixer": "^3.16",
 		"symfony/console": "^5.4 || ^6.0",
+		"symfony/event-dispatcher": "^5.4 || ^6.0",
+		"symfony/event-dispatcher-contracts": "^2 || ^3",
 		"symfony/filesystem": "^5.4 || ^6.0"
 	},
 	"require-dev": {
@@ -88,7 +91,11 @@
 			"@ci:composer:require-checker"
 		],
 		"ci:composer:normalize": "@composer normalize --dry-run",
-		"ci:composer:require-checker": "@php composer-require-checker",
+		"ci:composer:require-checker": [
+			"@composer require composer/composer:* --ansi --no-interaction --no-progress",
+			"@php composer-require-checker",
+			"@composer remove composer/composer --ansi --no-interaction --no-progress"
+		],
 		"ci:composer:validate": "@composer validate",
 		"ci:php": [
 			"@ci:php:lint",
