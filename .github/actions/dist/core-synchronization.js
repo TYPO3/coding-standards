@@ -338,7 +338,7 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
 
     try {
       const coreEditorconfig = await getCoreFileContent('.editorconfig')
-      const localFile = '.editorconfig'
+      const localFile = 'templates/.editorconfig'
       const fileReplaced = await replaceFile(localFile, coreEditorconfig)
 
       if (fileReplaced) {
