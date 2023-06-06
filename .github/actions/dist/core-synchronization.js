@@ -9,7 +9,7 @@
  * @param {string} typo3CoreRepo
  * @returns {void}
  */
-module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3CoreOwner, typo3CoreRepo) => {
+module.exports = async ({github, context, core, exec}, pullRequestBranchBase, typo3CoreOwner, typo3CoreRepo) => {
   /**
    * Log a debug message.
    *
@@ -220,7 +220,7 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
       owner: context.repo.owner,
       repo: context.repo.repo,
       title: "[TASK] Sync files with the latest TYPO3 Core version",
-      head: `${branch}-${context.ref}`,
+      head: branch,
       base: context.ref,
       body: `- [ ] Update rules count (https://github.com/TYPO3/coding-standards/edit/${branch}/tests/Unit/CsFixerConfigTest.php)`,
       maintainer_can_modify: true,
@@ -372,6 +372,8 @@ module.exports = async ({github, context, core, exec}, pullRequestBranch, typo3C
 
   try {
     dumpContext()
+
+    const pullRequestBranch = `${pullRequestBranchBase}/${context.ref}`
 
     await setupRepository(pullRequestBranch)
 
