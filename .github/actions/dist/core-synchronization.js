@@ -373,7 +373,7 @@ module.exports = async ({github, context, core, exec}, pullRequestBranchBase, ty
   try {
     dumpContext()
 
-    const pullRequestBranch = `${pullRequestBranchBase}/${context.ref}`
+    const pullRequestBranch = pullRequestBranchBase.concat(context.ref.replace('refs/heads', ''))
 
     await setupRepository(pullRequestBranch)
 
