@@ -4,6 +4,7 @@ parameters:
 	treatPhpDocTypesAsCertain: true
 
 	paths:
+		- build
 		- src
 		- tests
 		- typo3-coding-standards

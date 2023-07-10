@@ -1,0 +1,43 @@
+template: |
+  ## What's Changed Since $PREVIOUS_TAG
+
+  $CHANGES
+
+  **Full Changelog**: <https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION>
+category-template: '### $TITLE'
+name-template: 'TYPO3 Coding Standards Package $RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+tag-prefix: 'v'
+version-template: '$COMPLETE'
+change-template: '- $TITLE by @$AUTHOR in <$URL>'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+categories:
+  - title: '🚀 Features'
+    label: 'enhancement'
+  - title: '🐞 Bug Fixes'
+    label: 'bug'
+  - title: '🧰 Maintenance'
+    label: 'maintenance'
+  - title: '📖 Documentation'
+    label: 'documentation'
+  - title: '🔓 Security'
+    label: 'security'
+  - title: '⚠ Breaking'
+    label: 'breaking'
+exclude-labels:
+  - 'skip-changelog'
+version-resolver:
+  major:
+    labels:
+      - 'breaking'
+  minor:
+    labels:
+      - 'enhancement'
+  patch:
+    labels:
+      - 'bug'
+      - 'documentation'
+      - 'maintenance'
+      - 'security'
+  default: patch
+filter-by-commitish: true

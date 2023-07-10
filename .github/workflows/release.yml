@@ -1,0 +1,219 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      stability:
+        description: 'Stability'
+        required: true
+        default: 'RC'
+        type: choice
+        options:
+          - dev
+          - alpha
+          - beta
+          - RC
+          - stable
+      stabilityVersion:
+        description: 'Stability version, not used for stable'
+        required: false
+        default: ''
+        type: string
+      releaseDescription:
+        description: 'Optional release description'
+        required: false
+        default: ''
+        type: string
+
+env:
+  COMPOSER_FLAGS: --ansi --no-interaction --no-progress
+  COMPOSER_INSTALL_FLAGS: --prefer-dist
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: none
+          extensions: intl, zip
+          ini-values: memory_limit=-1
+          php-version: latest
+          tools: composer
+
+      - name: Composer Cache Vars
+        id: composer-cache-vars
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "::set-output name=timestamp::$(date +"%s")"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache-vars.outputs.dir }}
+          key: ${{ runner.os }}-composer-2-latest-${{ steps.composer-cache-vars.outputs.timestamp }}
+          restore-keys: |
+            ${{ runner.os }}-composer-2-latest-
+            ${{ runner.os }}-composer-2-
+            ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }}
+
+      - name: Calculate header
+        id: header
+        uses: actions/github-script@v6
+        env:
+          INPUTS: ${{ toJSON(inputs) }}
+        with:
+          result-encoding: string
+          script: |
+            const { INPUTS } = process.env
+            const inputs = JSON.parse(INPUTS)
+
+            let header = ''
+
+            if (inputs.releaseDescription != undefined && inputs.releaseDescription != '') {
+              header = `${inputs.releaseDescription}\n\n`
+            }
+
+            return header
+
+      - name: Create release draft
+        id: tempVersion
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: release-drafter/release-drafter@v5
+        with:
+          prerelease: ${{ inputs.stability != 'stable' }}
+          commitish: ${{ github.ref }}
+          disable-autolabeler: true
+
+      - name: Calculate final version
+        id: version
+        uses: actions/github-script@v6
+        env:
+          INPUTS: ${{ toJSON(inputs) }}
+          VERSION_OUTPUTS: ${{ toJSON(steps.tempVersion.outputs) }}
+        with:
+          script: |
+            const { INPUTS, VERSION_OUTPUTS } = process.env
+            const inputs = JSON.parse(INPUTS)
+            const versionOutputs = JSON.parse(VERSION_OUTPUTS)
+
+            const version = String(versionOutputs.tag_name).substring(1)
+            let versionSuffix = ''
+
+            if (inputs.stability != 'stable') {
+              versionSuffix = versionSuffix.concat('-', inputs.stability)
+
+              if (inputs.stabilityVersion == undefined || inputs.stabilityVersion == '') {
+                core.setFailed('For a stability other than stable, a stability version is needed.')
+                return
+              }
+
+              versionSuffix = versionSuffix.concat(inputs.stabilityVersion)
+            }
+
+            const completeVersion = version.concat(versionSuffix)
+            const name = String(versionOutputs.name).concat(versionSuffix)
+
+            const options = {};
+            options.ignoreReturnCode = true
+            const exitCode = await exec.exec(`git show-ref --tags "refs/tags/v${completeVersion}" >/dev/null 2>&1`, [], options)
+
+            if (exitCode == 0) {
+              core.setFailed(`A tag v${completeVersion} does already exist.`)
+            }
+
+            core.setOutput('version', completeVersion)
+            core.setOutput('prerelease', inputs.stability != 'stable')
+            core.setOutput('name', name)
+            core.setOutput('tag_name', String('v').concat(completeVersion))
+            core.setOutput('body', versionOutputs.body)
+
+      - name: Print calculated version
+        env:
+          VERSION_OUTPUTS: ${{ toJSON(steps.version.outputs) }}
+        run: |
+          echo "$VERSION_OUTPUTS"
+
+      - name: Modify changelog
+        uses: actions/github-script@v6
+        env:
+          VERSION_OUTPUTS: ${{ toJSON(steps.version.outputs) }}
+          REPOSITORY: ${{ toJSON(github.event.repository) }}
+        with:
+          script: |
+            const { VERSION_OUTPUTS, REPOSITORY } = process.env
+            const version = JSON.parse(VERSION_OUTPUTS)
+
+            const tagName = version.tag_name
+            const body = String(version.body).replaceAll('# ', '## ').trim()
+            const repository = REPOSITORY.full_name
+
+            const today = new Date()
+            const date = String(today.getFullYear()).concat('-', String(today.getMonth() + 1).padStart(2, '0'), '-', String(today.getDate()).padStart(2, '0'));
+            const title = `## [${tagName}](https://github.com/${repository}/releases/tag/${tagName}) - ${date}`
+
+            const changelogPath = 'CHANGELOG.md'
+            const fs = require('fs')
+            const changelog = fs.readFileSync(changelogPath, 'utf8')
+            const marker = '(start of releases)'
+            const newChangelog = changelog.replace(marker, marker.concat('\n\n', title, '\n\n', body))
+            fs.writeFileSync(changelogPath, newChangelog)
+
+      - name: Add release commit
+        env:
+          SENDER: ${{ toJSON(github.event.sender) }}
+        run: |
+          composer set-version ${{ steps.version.outputs.version }}
+          git config user.name ${{ github.event.sender.login }}
+          git config user.email ${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com
+          git add .
+          git commit -m "[RELEASE] Release of ${{ steps.version.outputs.name }}"
+          git push
+
+      - name: Create release
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: release-drafter/release-drafter@v5
+        with:
+          #name: ${{ steps.version.outputs.name }}
+          #tag: ${{ steps.version.outputs.tag_name }}
+          version: ${{ steps.version.outputs.version }}
+          publish: true
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          commitish: ${{ github.ref }}
+          header: ${{ steps.header.result }}
+          disable-autolabeler: true
+
+      - name: Calculate next version
+        id: next
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter-dev.yml
+          prerelease: true
+          commitish: ${{ github.ref }}
+          disable-autolabeler: true
+
+      - name: Print calculated version
+        env:
+          VERSION_OUTPUTS: ${{ toJSON(steps.next.outputs) }}
+        run: |
+          echo "$VERSION_OUTPUTS"
+
+      - name: Add version commit
+        run: |
+          composer set-version ${{ steps.next.outputs.tag_name }}
+          git add .
+          git commit -m "[TASK] Set TYPO3 Coding Standards version to ${{ steps.next.outputs.tag_name }}"
+          git push

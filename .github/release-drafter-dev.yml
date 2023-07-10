@@ -1,0 +1,8 @@
+name-template: 'TYPO3 Coding Standards Package $RESOLVED_VERSION'
+tag-template: '$RESOLVED_VERSION'
+version-template: '$MAJOR.$MINOR.$PATCH-dev'
+prerelease: true
+version-resolver:
+  default: minor
+filter-by-commitish: true
+template: _⚠⚠⚠ Draft to calculate next release. Will be overwritten with the next release and can be deleted at any time ⚠⚠⚠_
