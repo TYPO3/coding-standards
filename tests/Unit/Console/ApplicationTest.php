@@ -34,7 +34,7 @@ final class ApplicationTest extends TestCase
 
         $applicationTester = new ApplicationTester($application);
 
-        self::assertSame(0, $applicationTester->run([]));
+        self::assertSame(0, $applicationTester->run(['--no-ansi' => true]));
         self::assertStringContainsString(
             'TYPO3 Coding Standards ' . Application::VERSION,
             $applicationTester->getDisplay()
