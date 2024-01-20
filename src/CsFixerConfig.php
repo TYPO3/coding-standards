@@ -107,6 +107,9 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
                 'var',
                 'vendor',
             ])
+            ->notPath([
+                'config/system/settings.php',
+            ])
         ;
 
         return $static;
