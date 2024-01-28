@@ -22,8 +22,8 @@ on:
 #      - '.vscode/*'
 #      - '**.md'
 #      - '**.rst'
-  schedule:
-    - cron: '33 3 * * *'
+#  schedule:
+#    - cron: '33 3 * * *'
 
 env:
   COMPOSER_FLAGS: --ansi --no-interaction --no-progress
