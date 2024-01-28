@@ -3,8 +3,6 @@ name: 'Continuous Integration (CI)'
 on:
   push:
     branches:
-      - 'main'
-      - '[0-9]+.*'
     paths-ignore:
       - '.ddev/**'
       - '.github/ISSUE_TEMPLATE/*'

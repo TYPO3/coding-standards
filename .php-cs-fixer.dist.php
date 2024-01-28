@@ -17,7 +17,7 @@ $config
         true
     )
     ->addRules([
-        '@PER:risky' => true,
+        '@PER-CS:risky' => true,
         '@PHP80Migration:risky' => true,
         '@PHP81Migration' => true,
         'declare_strict_types' => true,

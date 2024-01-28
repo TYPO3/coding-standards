@@ -41,7 +41,7 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
      */
     protected static $typo3Rules = [
         '@DoctrineAnnotation' => true,
-        '@PER' => true,
+        '@PER-CS' => true,
         'array_syntax' => ['syntax' => 'short'],
         'cast_spaces' => ['space' => 'none'],
         'concat_space' => ['spacing' => 'one'],
@@ -49,7 +49,7 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
         'declare_parentheses' => true,
         'dir_constant' => true,
         'function_to_constant' => ['functions' => ['get_called_class', 'get_class', 'get_class_this', 'php_sapi_name', 'phpversion', 'pi']],
-        'function_typehint_space' => true,
+        'type_declaration_spaces' => true,
         'modernize_strpos' => true,
         'modernize_types_casting' => true,
         'native_function_casing' => true,

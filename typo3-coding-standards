@@ -32,7 +32,7 @@
     }
 
     if ($autoloader === null) {
-        throw new \RuntimeException(sprintf('Unable to locate autoload.php file from %s.', __FILE__));
+        throw new RuntimeException(sprintf('Unable to locate autoload.php file from %s.', __FILE__));
     }
 
     require_once $autoloader;
