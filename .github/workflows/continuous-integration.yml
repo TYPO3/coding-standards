@@ -2,20 +2,26 @@ name: 'Continuous Integration (CI)'
 
 on:
   push:
-    branches:
-    paths-ignore:
-      - '.ddev/**'
-      - '.github/ISSUE_TEMPLATE/*'
-      - '.vscode/*'
-      - '**.md'
-      - '**.rst'
   pull_request:
-    paths-ignore:
-      - '.ddev/**'
-      - '.github/ISSUE_TEMPLATE/*'
-      - '.vscode/*'
-      - '**.md'
-      - '**.rst'
+
+# on:
+#  push:
+#    branches:
+#      - 'main'
+#      - '[0-9]+.*'
+#    paths-ignore:
+#      - '.ddev/**'
+#      - '.github/ISSUE_TEMPLATE/*'
+#      - '.vscode/*'
+#      - '**.md'
+#      - '**.rst'
+#  pull_request:
+#    paths-ignore:
+#      - '.ddev/**'
+#      - '.github/ISSUE_TEMPLATE/*'
+#      - '.vscode/*'
+#      - '**.md'
+#      - '**.rst'
   schedule:
     - cron: '33 3 * * *'
 
