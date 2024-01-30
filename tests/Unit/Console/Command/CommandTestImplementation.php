@@ -21,6 +21,4 @@ use TYPO3\CodingStandards\Console\Command\Command;
 /**
  * @internal for testing only
  */
-final class CommandTestImplementation extends Command
-{
-}
+final class CommandTestImplementation extends Command {}
