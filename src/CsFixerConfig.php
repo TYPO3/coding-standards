@@ -45,11 +45,20 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
         'array_syntax' => ['syntax' => 'short'],
         'cast_spaces' => ['space' => 'none'],
         'concat_space' => ['spacing' => 'one'],
+        'curly_braces_position' => ['allow_single_line_empty_anonymous_classes' => true],
         'declare_equal_normalize' => ['space' => 'none'],
         'declare_parentheses' => true,
         'dir_constant' => true,
         'function_to_constant' => ['functions' => ['get_called_class', 'get_class', 'get_class_this', 'php_sapi_name', 'phpversion', 'pi']],
         'function_typehint_space' => true,
+        'function_declaration' => [
+            'closure_function_spacing' => 'none',
+        ],
+        'single_line_throw' => false,
+        'php_unit_internal_class' => false,
+        'braces' => [
+            'allow_single_line_closure' => true,
+        ],
         'modernize_strpos' => true,
         'modernize_types_casting' => true,
         'native_function_casing' => true,
@@ -106,6 +115,9 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
                 'typo3temp',
                 'var',
                 'vendor',
+            ])
+            ->notPath([
+                'config/system/settings.php',
             ])
         ;
 
