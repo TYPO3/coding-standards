@@ -21,9 +21,11 @@ use RuntimeException;
 use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Console\Command\Command;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
+use TYPO3\CodingStandards\Console\Command\UpdateCommand;
 use TYPO3\CodingStandards\Setup;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(SetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\CoversClass(UpdateCommand::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Application::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Command::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Setup::class)]
