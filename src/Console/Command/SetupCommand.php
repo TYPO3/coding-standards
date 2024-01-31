@@ -29,21 +29,13 @@ use TYPO3\CodingStandards\Setup;
  */
 final class SetupCommand extends Command
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'setup';
-
-    /**
-     * @var string
-     */
-    protected static $defaultDescription = 'Setting up the TYPO3 rule sets for an extension or a project';
-
     protected function configure(): void
     {
         parent::configure();
 
         $this
+            ->setName('setup')
+            ->setDescription('Setting up the TYPO3 rule sets for an extension or a project')
             ->addArgument('type', InputArgument::OPTIONAL, sprintf(
                 'Type to setup, valid types are <comment>["%s"]</comment>. If not set, the detection is automatic',
                 implode('","', Setup::VALID_TYPES)

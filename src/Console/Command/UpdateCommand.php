@@ -26,15 +26,11 @@ use TYPO3\CodingStandards\Setup;
  */
 final class UpdateCommand extends Command
 {
-    /**
-     * @var string
-     */
-    protected static $defaultName = 'update';
-
-    /**
-     * @var string
-     */
-    protected static $defaultDescription = 'Update the TYPO3 rule sets';
+    protected function configure(): void
+    {
+        $this->setName('update');
+        $this->setDescription('Update the TYPO3 rule sets');
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

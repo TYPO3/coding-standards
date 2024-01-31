@@ -251,7 +251,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function ask($question, $default = null, $validator = null)
+    public function ask(string $question, string $default = null, callable $validator = null): mixed
     {
         $question = new Question($question, $default);
         $question->setValidator($validator);
@@ -262,7 +262,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function askHidden($question, $validator = null)
+    public function askHidden(string $question, callable $validator = null): mixed
     {
         $question = new Question($question);
 
@@ -275,7 +275,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function confirm($question, $default = true)
+    public function confirm(string $question, bool $default = true): bool
     {
         return $this->askQuestion(new ConfirmationQuestion($question, $default));
     }
@@ -283,7 +283,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function choice($question, array $choices, $default = null)
+    public function choice(string $question, array $choices, mixed $default = null): mixed
     {
         if ($default !== null) {
             $values = array_flip($choices);
@@ -296,7 +296,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function progressStart($max = 0): void
+    public function progressStart(int $max = 0): void
     {
         $this->progressBar = $this->createProgressBar($max);
         $this->progressBar->start();
@@ -305,7 +305,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function progressAdvance($step = 1): void
+    public function progressAdvance(int $step = 1): void
     {
         $this->getProgressBar()->advance($step);
     }
@@ -323,7 +323,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function createProgressBar($max = 0)
+    public function createProgressBar(int $max = 0): ProgressBar
     {
         $progressBar = parent::createProgressBar($max);
 
@@ -448,7 +448,7 @@ class SimpleStyle extends OutputStyle
     private function createBlock(iterable $messages, string $type = null, string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false): array
     {
         $indentLength = 0;
-        $prefixLength = Helper::strlenWithoutDecoration($this->getFormatter(), $prefix);
+        $prefixLength = Helper::removeDecoration($this->getFormatter(), $prefix);
         $lines = [];
 
         if ($type !== null) {

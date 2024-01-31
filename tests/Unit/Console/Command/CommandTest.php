@@ -21,10 +21,12 @@ use Symfony\Component\Console\Input\ArrayInput;
 use TYPO3\CodingStandards\Console\Application;
 use TYPO3\CodingStandards\Console\Command\Command;
 use TYPO3\CodingStandards\Console\Command\SetupCommand;
+use TYPO3\CodingStandards\Console\Command\UpdateCommand;
 
 #[\PHPUnit\Framework\Attributes\CoversClass(Command::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(Application::class)]
 #[\PHPUnit\Framework\Attributes\UsesClass(SetupCommand::class)]
+#[\PHPUnit\Framework\Attributes\UsesClass(UpdateCommand::class)]
 final class CommandTest extends CommandTestCase
 {
     private ?CommandTestImplementation $commandTestImplementation = null;
