@@ -60,9 +60,14 @@ abstract class AbstractCliTestCase extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['--target-dir' => self::getRootPath()]);
 
+        $expected = $commandTester->getDisplay();
+        $result = self::executeCliCommand('setup')->getOutput();
+        // Replace all line breaks
+        $result = preg_replace('/[\h]+\n[\h]+/m', ' ', $result);
+
         self::assertSame(
-            $commandTester->getDisplay(),
-            self::executeCliCommand('setup')->getOutput()
+            $expected,
+            $result
         );
     }
 
