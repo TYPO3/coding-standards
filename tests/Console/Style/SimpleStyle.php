@@ -20,6 +20,7 @@ use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\OutputWrapper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\SymfonyQuestionHelper;
 use Symfony\Component\Console\Helper\Table;
@@ -102,7 +103,7 @@ class SimpleStyle extends OutputStyle
      */
     public function listing(array $elements): void
     {
-        $elements = array_map(fn ($element) => sprintf(' * %s', $element), $elements);
+        $elements = array_map(fn($element) => sprintf(' * %s', $element), $elements);
 
         $this->writeln($elements);
     }
@@ -448,23 +449,30 @@ class SimpleStyle extends OutputStyle
     private function createBlock(iterable $messages, string $type = null, string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false): array
     {
         $indentLength = 0;
-        $prefixLength = Helper::removeDecoration($this->getFormatter(), $prefix);
+        $prefixLength = Helper::width(Helper::removeDecoration($this->getFormatter(), $prefix));
         $lines = [];
 
         if ($type !== null) {
             $type = sprintf('[%s] ', $type);
-            $indentLength = \strlen($type);
+            $indentLength = Helper::width($type);
             $lineIndentation = str_repeat(' ', $indentLength);
         }
 
         // wrap and add newlines for each element
+        $outputWrapper = new OutputWrapper();
         foreach ($messages as $key => $message) {
             if ($escape) {
                 $message = OutputFormatter::escape($message);
             }
 
-            //$lines = array_merge($lines, explode(\PHP_EOL, wordwrap($message, $this->lineLength - $prefixLength - $indentLength, \PHP_EOL, true)));
-            $lines = array_merge($lines, [$message]);
+            $lines = array_merge(
+                $lines,
+                explode(\PHP_EOL, $outputWrapper->wrap(
+                    $message,
+                    $this->lineLength - $prefixLength - $indentLength,
+                    \PHP_EOL
+                ))
+            );
 
             if (\count($messages) > 1 && $key < \count($messages) - 1) {
                 $lines[] = '';
@@ -484,7 +492,7 @@ class SimpleStyle extends OutputStyle
             }
 
             $line = $prefix . $line;
-            //$line .= str_repeat(' ', $this->lineLength - Helper::strlenWithoutDecoration($this->getFormatter(), $line));
+            //$line .= str_repeat(' ', max($this->lineLength - Helper::width(Helper::removeDecoration($this->getFormatter(), $line)), 0));
 
             if ($style) {
                 $line = sprintf('<%s>%s</>', $style, $line);
