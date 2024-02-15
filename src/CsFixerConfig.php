@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 project.
  *
- * (c) 2019-2023 Benni Mack
+ * (c) 2019-2024 Benni Mack
  *               Simon Gilli
  *
  * For the full copyright and license information, please view
@@ -41,24 +41,26 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
      */
     protected static $typo3Rules = [
         '@DoctrineAnnotation' => true,
-        '@PER' => true,
+        // @todo: Switch to @PER-CS2.0 once php-cs-fixer's todo list is done: https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues/7247
+        '@PER-CS1.0' => true,
+        'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
         'cast_spaces' => ['space' => 'none'],
+        // @todo: Can be dropped once we enable @PER-CS2.0
         'concat_space' => ['spacing' => 'one'],
-        'curly_braces_position' => ['allow_single_line_empty_anonymous_classes' => true],
         'declare_equal_normalize' => ['space' => 'none'],
         'declare_parentheses' => true,
         'dir_constant' => true,
-        'function_to_constant' => ['functions' => ['get_called_class', 'get_class', 'get_class_this', 'php_sapi_name', 'phpversion', 'pi']],
-        'function_typehint_space' => true,
+        // @todo: Can be dropped once we enable @PER-CS2.0
         'function_declaration' => [
-            'closure_function_spacing' => 'none',
+            'closure_fn_spacing' => 'none',
         ],
-        'single_line_throw' => false,
-        'php_unit_internal_class' => false,
-        'braces' => [
-            'allow_single_line_closure' => true,
-        ],
+        'function_to_constant' => ['functions' => ['get_called_class', 'get_class', 'get_class_this', 'php_sapi_name', 'phpversion', 'pi']],
+        'type_declaration_spaces' => true,
+        'global_namespace_import' => ['import_classes' => false, 'import_constants' => false, 'import_functions' => false],
+        'list_syntax' => ['syntax' => 'short'],
+        // @todo: Can be dropped once we enable @PER-CS2.0
+        'method_argument_space' => true,
         'modernize_strpos' => true,
         'modernize_types_casting' => true,
         'native_function_casing' => true,
@@ -92,6 +94,8 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
         'single_quote' => true,
         'single_space_around_construct' => true,
         'single_line_comment_style' => ['comment_types' => ['hash']],
+        // @todo: Can be dropped once we enable @PER-CS2.0
+        'single_line_empty_body' => true,
         'trailing_comma_in_multiline' => ['elements' => ['arrays']],
         'whitespace_after_comma_in_array' => ['ensure_single_space' => true],
         'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
