@@ -238,13 +238,13 @@ jobs:
         experimental:
           - false
         include:
-          - php-version: 'stable'
+          - php-version: 'latest'
             dependencies: 'lowest'
             experimental: true
-          - php-version: 'stable'
+          - php-version: 'latest'
             dependencies: 'stable'
             experimental: true
-          - php-version: 'stable'
+          - php-version: 'latest'
             dependencies: 'highest'
             experimental: true
 
