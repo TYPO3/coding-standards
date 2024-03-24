@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 project.
  *
- * (c) 2019-2023 Benni Mack
+ * (c) 2019-2024 Benni Mack
  *               Simon Gilli
  *
  * For the full copyright and license information, please view
@@ -60,9 +60,14 @@ abstract class AbstractCliTestCase extends TestCase
         $commandTester = new CommandTester($command);
         $commandTester->execute(['--target-dir' => self::getRootPath()]);
 
+        $expected = $commandTester->getDisplay();
+        $result = self::executeCliCommand('setup')->getOutput();
+        // Replace all line breaks
+        $result = preg_replace('/[\h]+\n[\h]+/m', ' ', $result);
+
         self::assertSame(
-            $commandTester->getDisplay(),
-            self::executeCliCommand('setup')->getOutput()
+            $expected,
+            $result
         );
     }
 

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of the TYPO3 project.
  *
- * (c) 2019-2023 Benni Mack
+ * (c) 2019-2024 Benni Mack
  *               Simon Gilli
  *
  * For the full copyright and license information, please view
@@ -27,7 +27,7 @@ final class CsFixerConfigTest extends TestCase
         $csFixerConfig = CsFixerConfig::create();
         self::assertInstanceOf(CsFixerConfig::class, $csFixerConfig);
         self::assertTrue($csFixerConfig->getRiskyAllowed());
-        self::assertCount(51, $csFixerConfig->getRules());
+        self::assertCount(52, $csFixerConfig->getRules());
     }
 
     public function testAddRules(): void
