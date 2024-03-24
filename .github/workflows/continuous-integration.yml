@@ -231,7 +231,6 @@ jobs:
           - '8.1'
           - '8.2'
           - '8.3'
-          - 'latest'
         dependencies:
           - 'lowest'
           - 'stable'
@@ -323,7 +322,6 @@ jobs:
           - '8.1'
           - '8.2'
           - '8.3'
-          - 'latest'
         composer-version:
           - '2'
         dependencies:
