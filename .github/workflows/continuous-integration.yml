@@ -231,23 +231,12 @@ jobs:
           - '8.1'
           - '8.2'
           - '8.3'
-          - 'latest'
         dependencies:
           - 'lowest'
           - 'stable'
           - 'highest'
         experimental:
           - false
-        include:
-          - php-version: 'nightly'
-            dependencies: 'lowest'
-            experimental: true
-          - php-version: 'nightly'
-            dependencies: 'stable'
-            experimental: true
-          - php-version: 'nightly'
-            dependencies: 'highest'
-            experimental: true
 
     steps:
       - name: Checkout
@@ -285,10 +274,6 @@ jobs:
       - name: Allow alpha releases for latest-deps builds to catch problems earlier
         if: contains(matrix.dependencies, 'highest')
         run: composer config minimum-stability alpha
-
-      - name: Ignore platfrom requirements for nightly
-        if: ${{ matrix.php-version == 'nightly' }}
-        run: echo "COMPOSER_UPDATE_FLAGS=$COMPOSER_UPDATE_FLAGS --ignore-platform-reqs" >> $GITHUB_ENV
 
       - name: Install dependencies without deprecation rules
         run: |
