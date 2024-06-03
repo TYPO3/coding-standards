@@ -102,7 +102,7 @@ class SimpleStyle extends OutputStyle
      */
     public function listing(array $elements): void
     {
-        $elements = array_map(fn ($element) => sprintf(' * %s', $element), $elements);
+        $elements = array_map(fn($element) => sprintf(' * %s', $element), $elements);
 
         $this->writeln($elements);
     }
