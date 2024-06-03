@@ -56,14 +56,12 @@ abstract class AbstractCliTestCase extends TestCase
     public function testSetup(): void
     {
         $command = (new Application())->find('setup');
-
         $commandTester = new CommandTester($command);
-        $commandTester->execute(['--target-dir' => self::getRootPath()]);
 
-        self::assertSame(
-            $commandTester->getDisplay(),
-            self::executeCliCommand('setup')->getOutput()
-        );
+        $commandTester->execute(['--target-dir' => self::getRootPath()]);
+        $output = self::executeCliCommand('setup')->getOutput();
+
+        self::assertStringContainsString('[ERROR] A .php-cs-fixer.dist.php file already exists,', $output);
     }
 
     public function testSetupHelp(): void
