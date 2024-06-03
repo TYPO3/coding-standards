@@ -16,7 +16,7 @@
 /**
  * Loads Composer's autoload.php.
  */
-(static function(): void {
+(static function (): void {
     $possibleAutoloaders = [
         __DIR__ . '/../../autoload.php',
         __DIR__ . '/../autoload.php',
