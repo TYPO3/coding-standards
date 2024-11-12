@@ -1,5 +1,5 @@
 parameters:
-	level: max
+	level: 9
 	phpVersion: 80100
 	treatPhpDocTypesAsCertain: true
 
@@ -11,6 +11,3 @@ parameters:
 	excludePaths:
 		analyse:
 			- tests/Console/Style/SimpleStyle.php
-
-	stubFiles:
-		- stubs/Command.stub

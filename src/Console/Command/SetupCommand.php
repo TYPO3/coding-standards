@@ -92,7 +92,7 @@ final class SetupCommand extends Command
                 throw new RuntimeException(sprintf($composerManifestError, 'read')); // @codeCoverageIgnore
             }
 
-            $composerManifest = \json_decode($composerManifest, true, 512, 0);
+            $composerManifest = \json_decode($composerManifest, true);
             if ($composerManifest === false || !is_array($composerManifest)) {
                 throw new RuntimeException(sprintf($composerManifestError, 'decoded'));
             }
