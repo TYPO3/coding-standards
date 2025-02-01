@@ -251,7 +251,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function ask(string $question, string $default = null, callable $validator = null): mixed
+    public function ask(string $question, ?string $default = null, ?callable $validator = null): mixed
     {
         $question = new Question($question, $default);
         $question->setValidator($validator);
@@ -262,7 +262,7 @@ class SimpleStyle extends OutputStyle
     /**
      * @inheritDoc
      */
-    public function askHidden(string $question, callable $validator = null): mixed
+    public function askHidden(string $question, ?callable $validator = null): mixed
     {
         $question = new Question($question);
 
@@ -445,7 +445,7 @@ class SimpleStyle extends OutputStyle
         $this->bufferedOutput->write($message, $newLine, $type);
     }
 
-    private function createBlock(iterable $messages, string $type = null, string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false): array
+    private function createBlock(iterable $messages, ?string $type = null, ?string $style = null, string $prefix = ' ', bool $padding = false, bool $escape = false): array
     {
         $indentLength = 0;
         $prefixLength = Helper::removeDecoration($this->getFormatter(), $prefix);

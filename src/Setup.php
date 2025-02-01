@@ -63,7 +63,7 @@ final class Setup
     /**
      * @throws RuntimeException
      */
-    public function __construct(string $targetDir, StyleInterface $style = null)
+    public function __construct(string $targetDir, ?StyleInterface $style = null)
     {
         if ($targetDir === '') {
             $targetDir = '.'; // @codeCoverageIgnore
