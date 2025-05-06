@@ -399,14 +399,6 @@ jobs:
           composer global require ${{ env.COMPOSER_INSTALL_FLAGS }} ${{ env.COMPOSER_FLAGS }} php-coveralls/php-coveralls
           composer global exec php-coveralls -- --coverage_clover=var/log/coverage/clover.xml -vvv --json_path=var/log/coverage/coveralls-upload.json
 
-      - name: Upload Logs
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: logs-${{ matrix.composer-version }}-${{ matrix.php-version }}-${{ matrix.dependencies }}
-          path: var/log
-          retention-days: 7
-
   coveralls-finish:
     name: Finish Coveralls
     needs:
