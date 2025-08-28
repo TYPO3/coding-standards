@@ -25,7 +25,7 @@ final class CsFixerConfigTest extends TestCase
     {
         $csFixerConfig = CsFixerConfig::create();
         self::assertTrue($csFixerConfig->getRiskyAllowed());
-        self::assertCount(54, $csFixerConfig->getRules());
+        self::assertCount(55, $csFixerConfig->getRules());
     }
 
     public function testAddRules(): void
