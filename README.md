@@ -1,7 +1,6 @@
 # TYPO3 Coding Standards Package
 
 [![Continuous Integration (CI)](https://github.com/TYPO3/coding-standards/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/TYPO3/coding-standards/actions/workflows/continuous-integration.yml)
-[![Core Synchronization](https://github.com/TYPO3/coding-standards/actions/workflows/core-synchronization.yml/badge.svg)](https://github.com/TYPO3/coding-standards/actions/workflows/core-synchronization.yml)
 [![Coverage Status](https://coveralls.io/repos/github/TYPO3/coding-standards/badge.svg?branch=main)](https://coveralls.io/github/TYPO3/coding-standards?branch=main)
 
 You know the feeling: You work on your own extension, and then contribute to
@@ -186,9 +185,10 @@ This package is not meant to be updated regularly, since talking about coding
 guidelines takes a lot of time, and is usual a matter of taste. Nonetheless,
 you can always open up an issue if you feel like we're missing out on something.
 
-A GitHub action automatically synchronizes the files with the TYPO3 Core. Please
-do not open pull requests for these changes, but push your changes to the
-TYPO3 Core.
+The rule sets and templates are synchronized with the TYPO3 Core manually.
+Pull requests bringing them in line with the latest TYPO3 Core state are
+welcome, changes to the rules themselves should be pushed to the TYPO3 Core
+instead.
 
 ### Development
 
@@ -198,12 +198,6 @@ and switching PHP versions very easy. For more information about DDEV, see the
 
 In the `composer.json` many scripts are predefined to run the CI locally before
 you push erroneous changes. Additionally some fix commands are integrated.
-
-#### Manually update the files from the core
-
-The synchronization job is scheduled once per night. It can also be started
-manually on the `Actions` tab on GitHub by selecting `Core Synchronization` and
-running the workflow on the main branch.
 
 ## License & Thanks
 
