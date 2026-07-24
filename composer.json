@@ -30,7 +30,7 @@
 		"docs": "https://docs.typo3.org"
 	},
 	"require": {
-		"php": "^8.1",
+		"php": "^8.2",
 		"ext-json": "*",
 		"friendsofphp/php-cs-fixer": "^3.95.1",
 		"symfony/console": "^6.4 || ^7.4 || ^8.0",
