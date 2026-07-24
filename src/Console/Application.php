@@ -97,8 +97,16 @@ final class Application extends BaseApplication
         parent::__construct('TYPO3 Coding Standards', self::VERSION);
 
         // in alphabetical order
-        $this->add(new SetupCommand());
-        $this->add(new UpdateCommand());
+        // @phpstan-ignore function.alreadyNarrowedType (addCommand() only exists since symfony/console 7.4)
+        if (method_exists($this, 'addCommand')) {
+            $this->addCommand(new SetupCommand());
+            $this->addCommand(new UpdateCommand());
+        } else {
+            // @phpstan-ignore method.deprecated (add() is the only option prior to symfony/console 7.4 and was removed in 8.0)
+            $this->add(new SetupCommand());
+            // @phpstan-ignore method.deprecated (add() is the only option prior to symfony/console 7.4 and was removed in 8.0)
+            $this->add(new UpdateCommand());
+        }
 
         //$this->setDefaultCommand('setup', false);
     }
