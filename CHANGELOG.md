@@ -9,7 +9,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.8.0...main>
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.9.0...main>
+
+## [v0.9.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.9.0) - 2026-07-24
+
+### What's Changed Since 0.8.0
+
+#### 🐞 Bug Fixes
+
+* [BUGFIX] Support symfony/console 8.0 by @bmack
+* [BUGFIX] Resolve PHPStan errors by @bmack
+* [BUGFIX] Adapt rule count assertion to the @PER-CS3x0 rule set by @bmack
+
+#### 🧰 Maintenance
+
+* [TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/135>
+* [TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/137>
+* [TASK] Update upload action by @ochorocho in <https://github.com/TYPO3/coding-standards/pull/139>
+* [TASK] Update upload action by @ochorocho in <https://github.com/TYPO3/coding-standards/pull/140>
+* [TASK] Sync php-cs-fixer rules with the latest TYPO3 Core version by @smichaelsen in <https://github.com/TYPO3/coding-standards/pull/142>
+* [TASK] Sync php-cs-fixer rules with the latest TYPO3 Core version by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/143>
+* [TASK] Ensure this package gets installed as dev dependency by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/144>
+* [TASK] Sync `.editorconfig` with the latest TYPO3 Core version by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/145>
+* [!!!][TASK] Sync rule with the Core and switch to @PER-CS3x0 by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/147>
+* [TASK] Allow Symfony 8.0 by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/148>
+* [TASK] Update and pin the development dependencies by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/149>
+* [TASK] Drop broken CI workflow by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/150>
+* [TASK] Remove the Core Synchronization workflow by @bmack
+* [!!!][TASK] Remove deprecated Setup::forProject() and forExtension() by @bmack
+* [!!!][TASK] Raise the minimum PHP version to 8.2 by @bmack
+
+#### 📖 Documentation
+
+* [DOCS] Backfill v0.8.0 changelog entry and fix broken links by @bmack
+
+#### ⚠ Breaking
+
+* [!!!][TASK] Sync rule with the Core and switch to @PER-CS3x0 by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/147>
+* [!!!][TASK] Remove deprecated Setup::forProject() and forExtension() by @bmack
+* [!!!][TASK] Raise the minimum PHP version to 8.2 by @bmack
+
+### New Contributors Since 0.8.0
+
+* @smichaelsen made their first contribution in <https://github.com/TYPO3/coding-standards/pull/142>
+
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.8.0...v0.9.0>
 
 ## [v0.8.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.8.0) - 2024-06-03
 
