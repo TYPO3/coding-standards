@@ -32,7 +32,7 @@ final class Application extends BaseApplication
     /**
      * @var string
      */
-    public const VERSION = '0.8.0';
+    public const VERSION = '0.9.0';
 
     /**
      * getcwd() equivalent which always returns a string.
