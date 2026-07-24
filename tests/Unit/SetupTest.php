@@ -100,10 +100,10 @@ final class SetupTest extends TestCase
         // create pre existing files
         self::createFiles($testPath, $existingFiles);
 
-        // call the subject's method
-        $methodName = 'for' . ucfirst($testType);
-        // @phpstan-ignore-next-line
-        self::assertSame($expectedResult, $setup->$methodName($force));
+        // call the subject's methods
+        $result = $setup->copyEditorConfig($force);
+        $result = $setup->copyPhpCsFixerConfig($force, $testType) && $result;
+        self::assertSame($expectedResult, $result ? 0 : 1);
         self::assertSame($this->calculateOutput($expectedOutput, $testType), $bufferedOutput->fetch());
 
         // assert files
@@ -124,7 +124,7 @@ final class SetupTest extends TestCase
      * @param array<string, bool|string> $expectedFiles
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('scenariosProvider')]
-    public function testForProjectScenarios(
+    public function testProjectScenarios(
         array $existingFiles,
         bool $force,
         int $expectedResult,
@@ -140,7 +140,7 @@ final class SetupTest extends TestCase
      * @param array<string, bool|string> $expectedFiles
      */
     #[\PHPUnit\Framework\Attributes\DataProvider('scenariosProvider')]
-    public function testForExtensionScenarios(
+    public function testExtensionScenarios(
         array $existingFiles,
         bool $force,
         int $expectedResult,
