@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace TYPO3\CodingStandards;
 
 use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
 
 class CsFixerConfig extends Config implements CsFixerConfigInterface
 {
@@ -141,17 +142,20 @@ class CsFixerConfig extends Config implements CsFixerConfigInterface
             ->setRiskyAllowed(true)
             ->setRules(static::$typo3Rules)
         ;
-        $static->getFinder()
-            ->exclude([
-                '.build',
-                'typo3temp',
-                'var',
-                'vendor',
-            ])
-            ->notPath([
-                'config/system/settings.php',
-            ])
-        ;
+        $finder = $static->getFinder();
+        if ($finder instanceof Finder) {
+            $finder
+                ->exclude([
+                    '.build',
+                    'typo3temp',
+                    'var',
+                    'vendor',
+                ])
+                ->notPath([
+                    'config/system/settings.php',
+                ])
+            ;
+        }
 
         return $static;
     }

@@ -96,9 +96,13 @@ final class SetupCommand extends Command
                 throw new \RuntimeException(sprintf($composerManifestError, 'decoded'));
             }
 
+            $extraConfiguration = $composerManifest['extra'] ?? [];
+            $typo3Configuration = is_array($extraConfiguration) ? ($extraConfiguration['typo3/cms'] ?? []) : [];
+            $extensionKey = is_array($typo3Configuration) ? ($typo3Configuration['extension-key'] ?? '') : '';
+
             if (
                 ($composerManifest['type'] ?? '') === 'typo3-cms-extension'
-                || ($composerManifest['extra']['typo3/cms']['extension-key'] ?? '') !== ''
+                || $extensionKey !== ''
             ) {
                 $type = Setup::EXTENSION;
             } else {
