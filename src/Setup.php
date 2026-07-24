@@ -91,28 +91,6 @@ final class Setup
     }
 
     /**
-     * @deprecated
-     */
-    public function forProject(bool $force): int
-    {
-        $result = $this->copyEditorConfig($force);
-        $result = $this->copyPhpCsFixerConfig($force, self::PROJECT) && $result;
-
-        return $result ? 0 : 1;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function forExtension(bool $force): int
-    {
-        $result = $this->copyEditorConfig($force);
-        $result = $this->copyPhpCsFixerConfig($force, self::EXTENSION) && $result;
-
-        return $result ? 0 : 1;
-    }
-
-    /**
      * @throws \RuntimeException
      */
     public function copyPhpCsFixerConfig(bool $force, string $type): bool
