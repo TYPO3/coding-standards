@@ -9,7 +9,67 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.7.0...main>
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.8.0...main>
+
+## [v0.8.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.8.0) - 2024-06-03
+
+### What's Changed Since 0.7.0
+
+#### 🚀 Features
+
+* [FEATURE] Add support for Symfony v7 components by @eliashaeussler in <https://github.com/TYPO3/coding-standards/pull/119>
+
+#### 🐞 Bug Fixes
+
+* [BUGFIX] Require a PHP-CS-Fixer version that support the PER standard by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/83>
+* [BUGFIX] Fix return types of CsFixerConfig by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/100>
+* [BUGFIX] Synchronization of .editorconfig by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/105>
+* [BUGFIX] Synchronization of .editorconfig again by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/107>
+* [BUGFIX] Fix branch support for core synchronization by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/113>
+* [BUGFIX] Skip system/settings.php by @mbrodala in <https://github.com/TYPO3/coding-standards/pull/117>
+* [BUGFIX] Be more lenient when checking the output in a string by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/126>
+* [BUGFIX] Fix a cache directory name in the `.gitignore` by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/134>
+
+#### 🧰 Maintenance
+
+* [TASK] Set TYPO3 Coding Standards version to 0.8.0 by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/80>
+* [TASK] Add TYPO3 Code of Conduct by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/81>
+* [TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/89>
+* [TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/90>
+* [TASK] Update to phpunit 10 by @bmack in <https://github.com/TYPO3/coding-standards/pull/91>
+* [TASK] Update to PHPUnit 10.1 and PHP 8.1 followup by @bmack in <https://github.com/TYPO3/coding-standards/pull/92>
+* [TASK] Apply rector changes by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/95>
+* [TASK] Remove Symfony 4 support by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/96>
+* [TASK] Add tests for abstract Command class by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/97>
+* [TASK] Allow PHP-CS to run on nightly builds by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/98>
+* [TASK] Apply new CS rules and minor cleanups by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/99>
+* [TASK] Update year in headers by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/101>
+* [TASK] Cleanup bootstrap by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/102>
+* [TASK] Enable strict coverage metadata by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/103>
+* [TASK] Simplify SetupCommand implementation by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/104>
+* [TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/93>
+* [TASK] Sync files with the latest TYPO3 Core version by @github-actions in <https://github.com/TYPO3/coding-standards/pull/106>
+* [TASK] Add branch support for core synchronization by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/109>
+* [TASK] Reformat default PHP-CS-Fixer configuration by @mbrodala in <https://github.com/TYPO3/coding-standards/pull/118>
+* [TASK] Update CI by @ochorocho in <https://github.com/TYPO3/coding-standards/pull/121>
+* [TASK] Add PHP 8.3 to version matrix in CI workflow by @eliashaeussler in <https://github.com/TYPO3/coding-standards/pull/122>
+* [TASK] Raise coding-standards minimum package by @bmack in <https://github.com/TYPO3/coding-standards/pull/123>
+* [TASK] Do not run PHPStan with unstable PHP versions by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/129>
+* [TASK] Only use released version of development dependencies by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/131>
+* [TASK] Drop support for Symfony 5 by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/130>
+* [TASK] Bump the copyright year by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/128>
+* [TASK] Upgrade the GitHub Actions by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/127>
+* [TASK] Update the PHPStan packages by @oliverklee in <https://github.com/TYPO3/coding-standards/pull/132>
+* [TASK] Update rules by @bmack in <https://github.com/TYPO3/coding-standards/pull/133>
+
+### New Contributors Since 0.7.0
+
+* @oliverklee made their first contribution in <https://github.com/TYPO3/coding-standards/pull/83>
+* @bmack made their first contribution in <https://github.com/TYPO3/coding-standards/pull/91>
+* @mbrodala made their first contribution in <https://github.com/TYPO3/coding-standards/pull/118>
+* @ochorocho made their first contribution in <https://github.com/TYPO3/coding-standards/pull/121>
+
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.7.0...v0.8.0>
 
 ## [v0.7.0](https://github.com/TYPO3/coding-standards/releases/tag/v0.7.0) - 2022-12-19
 
@@ -147,7 +207,7 @@ Enhanced .editorconfig.
 * [TASK] Use recommended naming for config by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/21>
 * [TASK] Sync .editorconfig template by @gilbertsoft in <https://github.com/TYPO3/coding-standards/pull/29>
 
-**Full Changelog**: <<https://github.com/TYPO3/coding-standards/compare/v0.5.1...v>
+**Full Changelog**: <https://github.com/TYPO3/coding-standards/compare/v0.5.1...v0.5.2>
 
 ## [v0.5.1](https://github.com/TYPO3/coding-standards/releases/tag/v0.5.1) - 2022-04-05
 
